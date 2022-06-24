@@ -1,0 +1,29 @@
+[package]
+name = "nfs_client"
+version = "0.1.0"
+authors = ["9506hqwy"]
+edition = "2021"
+rust-version = "1.60"
+repository = "https://github.com/9506hqwy/nfs-client-rs"
+license = "MIT OR Apache-2.0"
+keywords = ["nfs", "rfc5531", "rfc7530", "rfc7531"]
+categories = ["network-programming"]
+
+[dependencies]
+bytes = "1.1.0"
+log = "0.4.17"
+serde = { version="1.0.137", features=["derive"] }
+serde_xdr = { git="https://github.com/9506hqwy/xdr-rs", tag="0.3.0" }
+serde_xdr_derive = { git="https://github.com/9506hqwy/xdr-rs", tag="0.3.0" }
+url = "2.2.2"
+
+[dev-dependencies]
+chrono = "*"
+clap = { version="*", features=["cargo"] }
+
+[[example]]
+name = "nfs-ls"
+
+[profile.release]
+strip = "symbols"
+lto = true

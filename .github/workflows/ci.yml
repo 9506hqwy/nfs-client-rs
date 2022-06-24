@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+    tags-ignore: [ '*' ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run tests
+      run: cargo test --verbose
+    - name: Create Artifacts
+      run: cargo build --release --examples --verbose
+    - name: Create Archive (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        RUST_TARGET=`rustup show active-toolchain | sed -e 's/[^-]*-\(.*\)\s.*/\1/'`
+        tar -C ./target/release/examples/ -zcf nfs-client-${RUST_TARGET}.tar.gz nfs-ls
+        echo "RUST_TARGET=${RUST_TARGET}" >> $GITHUB_ENV
+        echo "ARTIFACT_PATH=nfs-client-${RUST_TARGET}.tar.gz" >> $GITHUB_ENV
+    - name: Create Archive (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        $RUST_TOOLCHAIN = $(rustup show active-toolchain) -Split '[ -]'
+        $RUST_ARCH=$RUST_TOOLCHAIN[1]
+        $RUST_PLAT=$RUST_TOOLCHAIN[2]
+        $RUST_OS=$RUST_TOOLCHAIN[3]
+        $RUST_ENV=$RUST_TOOLCHAIN[4]
+        $RUST_TARGET="${RUST_ARCH}-${RUST_PLAT}-${RUST_OS}-${RUST_ENV}"
+        Compress-Archive -Path 'target\release\examples\nfs-ls.exe' -DestinationPath "nfs-client-${RUST_TARGET}.zip"
+        Write-Output "RUST_TARGET=$RUST_TARGET" >> $env:GITHUB_ENV
+        Write-Output "ARTIFACT_PATH=nfs-client-${RUST_TARGET}.zip" >> $env:GITHUB_ENV
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        name: ${{ env.RUST_TARGET }}
+        path: ${{ env.ARTIFACT_PATH }}
+        retention-days: 1
