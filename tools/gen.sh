@@ -19,7 +19,7 @@ rustfmt src/protocol.rs
 
 cp -f proto/rfc7531.x ${WORKDIR}
 cat - << EOF >> ${WORKDIR}/rfc7531.x
-const RPCSEC_GSS = 3;
+const RPCSEC_GSS = 6;
 
 typedef int            int32_t;
 typedef unsigned int   uint32_t;

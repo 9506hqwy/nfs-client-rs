@@ -133,7 +133,7 @@ pub const OPEN4_SHARE_DENY_WRITE: u32 = 2u32;
 pub const OPEN4_SHARE_DENY_BOTH: u32 = 3u32;
 pub const OPEN4_RESULT_CONFIRM: u32 = 2u32;
 pub const OPEN4_RESULT_LOCKTYPE_POSIX: u32 = 4u32;
-pub const RPCSEC_GSS: u32 = 3u32;
+pub const RPCSEC_GSS: u32 = 6u32;
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[repr(i32)]
 pub enum NfsFtype4 {
@@ -1768,13 +1768,13 @@ impl XdrIndexer for Secinfo4 {
     type Error = ::serde_xdr::error::Error;
     fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
         match index {
-            3i32 => Ok(stringify!(RpcsecGss)),
+            6i32 => Ok(stringify!(RpcsecGss)),
             _ => Ok(stringify!(Default)),
         }
     }
     fn index(&self) -> i32 {
         match self {
-            Secinfo4::RpcsecGss(_) => 3i32,
+            Secinfo4::RpcsecGss(_) => 6i32,
             _ => unimplemented!(),
         }
     }
