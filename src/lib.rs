@@ -214,6 +214,43 @@ impl Client {
             _ => unreachable!(),
         }
     }
+
+    // op = 35, op = 36
+    pub fn set_clientid(&mut self, id: Vec<u8>) -> Result<u64, Error> {
+        let mut args = vec![];
+
+        let mut arg = binding::SETCLIENTID4args::default();
+        arg.client.id = id;
+        let arg = binding::NfsArgop4::OpSetclientid(arg);
+        args.push(arg);
+
+        let mut ret = self.compound(args)?;
+
+        match ret.pop() {
+            Some(binding::NfsResop4::OpSetclientid(binding::SETCLIENTID4res::Nfs4Ok(res))) => {
+                let mut args = vec![];
+
+                let arg = binding::SetclientidConfirm4args {
+                    clientid: res.clientid,
+                    setclientid_confirm: res.setclientid_confirm,
+                };
+                let arg = binding::NfsArgop4::OpSetclientidConfirm(arg);
+                args.push(arg);
+
+                let mut ret = self.compound(args)?;
+
+                match ret.pop() {
+                    Some(binding::NfsResop4::OpSetclientidConfirm(r))
+                        if r.status == binding::Nfsstat4::Nfs4Ok =>
+                    {
+                        Ok(res.clientid)
+                    }
+                    _ => unreachable!(),
+                }
+            }
+            _ => unreachable!(),
+        }
+    }
 }
 
 #[derive(Clone, Debug)]
