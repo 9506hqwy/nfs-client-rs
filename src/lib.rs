@@ -95,32 +95,7 @@ impl Client {
             path = path.join(name);
         }
 
-        let mut args = vec![];
-
-        for comp in path.components() {
-            match comp {
-                Component::Prefix(_) => {
-                    return Err(Error::NotSupported);
-                }
-                Component::RootDir => {
-                    let arg = binding::NfsArgop4::OpPutrootfh;
-                    args.push(arg);
-                }
-                Component::CurDir => {
-                    // PASS
-                }
-                Component::ParentDir => {
-                    args.pop();
-                }
-                Component::Normal(name) => {
-                    let arg = binding::LOOKUP4args {
-                        objname: name.to_str().unwrap().to_string(),
-                    };
-                    let arg = binding::NfsArgop4::OpLookup(arg);
-                    args.push(arg);
-                }
-            }
-        }
+        let mut args = path_to_arg(&path)?;
 
         let arg = binding::NfsArgop4::OpGetfh;
         args.push(arg);
@@ -129,6 +104,30 @@ impl Client {
 
         match ret.pop() {
             Some(binding::NfsResop4::OpGetfh(binding::GETFH4res::Nfs4Ok(res))) => Ok(res.object),
+            _ => unreachable!(),
+        }
+    }
+
+    // op = 25
+    pub fn read(&mut self, objname: Option<&Path>) -> Result<binding::READ4resok, Error> {
+        let mut path = self.path.clone();
+        if let Some(name) = objname {
+            path = path.join(name);
+        }
+
+        let mut args = path_to_arg(&path)?;
+
+        let arg = binding::READ4args {
+            count: u32::MAX,
+            ..Default::default()
+        };
+        let arg = binding::NfsArgop4::OpRead(arg);
+        args.push(arg);
+
+        let mut ret = self.compound(args)?;
+
+        match ret.pop() {
+            Some(binding::NfsResop4::OpRead(binding::READ4res::Nfs4Ok(res))) => Ok(res),
             _ => unreachable!(),
         }
     }
@@ -171,30 +170,8 @@ impl Client {
 
         match path.parent() {
             Some(parent) => {
-                for comp in parent.components() {
-                    match comp {
-                        Component::Prefix(_) => {
-                            return Err(Error::NotSupported);
-                        }
-                        Component::RootDir => {
-                            let arg = binding::NfsArgop4::OpPutrootfh;
-                            args.push(arg);
-                        }
-                        Component::CurDir => {
-                            // PASS
-                        }
-                        Component::ParentDir => {
-                            args.pop();
-                        }
-                        Component::Normal(name) => {
-                            let arg = binding::LOOKUP4args {
-                                objname: name.to_str().unwrap().to_string(),
-                            };
-                            let arg = binding::NfsArgop4::OpLookup(arg);
-                            args.push(arg);
-                        }
-                    }
-                }
+                let mut arg = path_to_arg(parent)?;
+                args.append(&mut arg);
 
                 let arg = binding::SECINFO4args {
                     name: path.file_name().unwrap().to_str().unwrap().to_string(),
@@ -440,4 +417,35 @@ fn parse_readdir_res(res: binding::READDIR4resok) -> Result<Vec<Entry>, Error> {
     }
 
     Ok(entries)
+}
+
+fn path_to_arg(path: &Path) -> Result<Vec<binding::NfsArgop4>, Error> {
+    let mut args = vec![];
+
+    for comp in path.components() {
+        match comp {
+            Component::Prefix(_) => {
+                return Err(Error::NotSupported);
+            }
+            Component::RootDir => {
+                let arg = binding::NfsArgop4::OpPutrootfh;
+                args.push(arg);
+            }
+            Component::CurDir => {
+                // PASS
+            }
+            Component::ParentDir => {
+                args.pop();
+            }
+            Component::Normal(name) => {
+                let arg = binding::LOOKUP4args {
+                    objname: name.to_str().unwrap().to_string(),
+                };
+                let arg = binding::NfsArgop4::OpLookup(arg);
+                args.push(arg);
+            }
+        }
+    }
+
+    Ok(args)
 }
