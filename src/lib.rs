@@ -159,6 +159,61 @@ impl Client {
             _ => unreachable!(),
         }
     }
+
+    // op = 33
+    pub fn secinfo(&mut self, objname: Option<&Path>) -> Result<Vec<binding::Secinfo4>, Error> {
+        let mut path = self.path.clone();
+        if let Some(name) = objname {
+            path = path.join(name);
+        }
+
+        let mut args = vec![];
+
+        match path.parent() {
+            Some(parent) => {
+                for comp in parent.components() {
+                    match comp {
+                        Component::Prefix(_) => {
+                            return Err(Error::NotSupported);
+                        }
+                        Component::RootDir => {
+                            let arg = binding::NfsArgop4::OpPutrootfh;
+                            args.push(arg);
+                        }
+                        Component::CurDir => {
+                            // PASS
+                        }
+                        Component::ParentDir => {
+                            args.pop();
+                        }
+                        Component::Normal(name) => {
+                            let arg = binding::LOOKUP4args {
+                                objname: name.to_str().unwrap().to_string(),
+                            };
+                            let arg = binding::NfsArgop4::OpLookup(arg);
+                            args.push(arg);
+                        }
+                    }
+                }
+
+                let arg = binding::SECINFO4args {
+                    name: path.file_name().unwrap().to_str().unwrap().to_string(),
+                };
+                let arg = binding::NfsArgop4::OpSecinfo(arg);
+                args.push(arg);
+            }
+            _ => {
+                return Ok(vec![]);
+            }
+        }
+
+        let mut ret = self.compound(args)?;
+
+        match ret.pop() {
+            Some(binding::NfsResop4::OpSecinfo(binding::SECINFO4res::Nfs4Ok(res))) => Ok(res),
+            _ => unreachable!(),
+        }
+    }
 }
 
 #[derive(Clone, Debug)]
