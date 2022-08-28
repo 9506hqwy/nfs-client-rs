@@ -6,7 +6,7 @@ edition = "2021"
 rust-version = "1.60"
 repository = "https://github.com/9506hqwy/nfs-client-rs"
 license = "MIT OR Apache-2.0"
-keywords = ["nfs", "rfc5531", "rfc7530", "rfc7531"]
+keywords = ["nfs", "rfc5531", "rfc7862", "rfc7863"]
 categories = ["network-programming"]
 
 [dependencies]

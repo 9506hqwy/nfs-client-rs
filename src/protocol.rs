@@ -312,11 +312,3 @@ impl Default for RejectedReply {
         RejectedReply::RpcMismatch(Default::default())
     }
 }
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct AuthsysParms {
-    pub stamp: u32,
-    pub machinename: String,
-    pub uid: u32,
-    pub gid: u32,
-    pub gids: Vec<u32>,
-}

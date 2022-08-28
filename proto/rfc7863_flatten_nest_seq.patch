@@ -1,0 +1,9 @@
+3265a3266,3269
+>    /// struct DEVICEIDWRAP {
+>    ///         deviceid4               gdlr_deviceid;
+>    /// };
+>    ///
+3269c3273
+<    ///         deviceid4               gdlr_deviceid_list<>;
+---
+>    ///         DEVICEIDWRAP            gdlr_deviceid_list<>;

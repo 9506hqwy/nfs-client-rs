@@ -111,11 +111,3 @@ case RPC_MISMATCH:
 case AUTH_ERROR:
     auth_stat stat;
 };
-
-struct authsys_parms {
-    unsigned int stamp;
-    string machinename<255>;
-    unsigned int uid;
-    unsigned int gid;
-    unsigned int gids<16>;
-};

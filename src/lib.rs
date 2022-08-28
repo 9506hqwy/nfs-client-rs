@@ -244,7 +244,7 @@ fn call_msg(serial: u32, proc: u32) -> protocol::RpcMsg {
         proc,
         cred: protocol::OpaqueAuth {
             flavor: protocol::AuthFlavor::AuthSys,
-            body: serde_xdr::to_bytes(&protocol::AuthsysParms::default()).unwrap(),
+            body: serde_xdr::to_bytes(&binding::AuthsysParms::default()).unwrap(),
         },
         ..protocol::CallBody::default()
     };
