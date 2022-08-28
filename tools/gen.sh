@@ -17,7 +17,7 @@ cp -f proto/rfc5531.x ${WORKDIR}
 ${WORKDIR}/rpcgen --use-std-trait ${WORKDIR}/rfc5531.x > src/protocol.rs
 rustfmt src/protocol.rs
 
-cp -f proto/rfc7531.x ${WORKDIR}
+cat proto/rfc7531.txt | grep "^  *///" | sed 's?^  */// ??' | sed 's?^  *///$??' > ${WORKDIR}/rfc7531.x
 cat - << EOF >> ${WORKDIR}/rfc7531.x
 const RPCSEC_GSS = 6;
 
