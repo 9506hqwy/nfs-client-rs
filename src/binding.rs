@@ -134,7 +134,7 @@ pub const OPEN4_SHARE_DENY_BOTH: u32 = 3u32;
 pub const OPEN4_RESULT_CONFIRM: u32 = 2u32;
 pub const OPEN4_RESULT_LOCKTYPE_POSIX: u32 = 4u32;
 pub const RPCSEC_GSS: u32 = 6u32;
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum NfsFtype4 {
     NF4REG = 1i32,
@@ -152,39 +152,37 @@ impl Default for NfsFtype4 {
         NfsFtype4::NF4REG
     }
 }
-impl AsRef<i32> for NfsFtype4 {
-    fn as_ref(&self) -> &'static i32 {
+impl XdrIndexer for NfsFtype4 {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            1i32 => Ok(stringify!(NF4REG)),
+            2i32 => Ok(stringify!(NF4DIR)),
+            3i32 => Ok(stringify!(NF4BLK)),
+            4i32 => Ok(stringify!(NF4CHR)),
+            5i32 => Ok(stringify!(NF4LNK)),
+            6i32 => Ok(stringify!(NF4SOCK)),
+            7i32 => Ok(stringify!(NF4FIFO)),
+            8i32 => Ok(stringify!(NF4ATTRDIR)),
+            9i32 => Ok(stringify!(NF4NAMEDATTR)),
+            _ => Ok(stringify!(NF4REG)),
+        }
+    }
+    fn index(&self) -> i32 {
         match self {
-            NfsFtype4::NF4REG => &1i32,
-            NfsFtype4::NF4DIR => &2i32,
-            NfsFtype4::NF4BLK => &3i32,
-            NfsFtype4::NF4CHR => &4i32,
-            NfsFtype4::NF4LNK => &5i32,
-            NfsFtype4::NF4SOCK => &6i32,
-            NfsFtype4::NF4FIFO => &7i32,
-            NfsFtype4::NF4ATTRDIR => &8i32,
-            NfsFtype4::NF4NAMEDATTR => &9i32,
+            NfsFtype4::NF4REG => 1i32,
+            NfsFtype4::NF4DIR => 2i32,
+            NfsFtype4::NF4BLK => 3i32,
+            NfsFtype4::NF4CHR => 4i32,
+            NfsFtype4::NF4LNK => 5i32,
+            NfsFtype4::NF4SOCK => 6i32,
+            NfsFtype4::NF4FIFO => 7i32,
+            NfsFtype4::NF4ATTRDIR => 8i32,
+            NfsFtype4::NF4NAMEDATTR => 9i32,
         }
     }
 }
-impl TryFrom<i32> for NfsFtype4 {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            1i32 => Ok(NfsFtype4::NF4REG),
-            2i32 => Ok(NfsFtype4::NF4DIR),
-            3i32 => Ok(NfsFtype4::NF4BLK),
-            4i32 => Ok(NfsFtype4::NF4CHR),
-            5i32 => Ok(NfsFtype4::NF4LNK),
-            6i32 => Ok(NfsFtype4::NF4SOCK),
-            7i32 => Ok(NfsFtype4::NF4FIFO),
-            8i32 => Ok(NfsFtype4::NF4ATTRDIR),
-            9i32 => Ok(NfsFtype4::NF4NAMEDATTR),
-            _ => Err(serde_xdr::error::Error::Convert),
-        }
-    }
-}
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum Nfsstat4 {
     Nfs4Ok = 0i32,
@@ -259,149 +257,147 @@ impl Default for Nfsstat4 {
         Nfsstat4::Nfs4Ok
     }
 }
-impl AsRef<i32> for Nfsstat4 {
-    fn as_ref(&self) -> &'static i32 {
-        match self {
-            Nfsstat4::Nfs4Ok => &0i32,
-            Nfsstat4::Nfs4errPerm => &1i32,
-            Nfsstat4::Nfs4errNoent => &2i32,
-            Nfsstat4::Nfs4errIo => &5i32,
-            Nfsstat4::Nfs4errNxio => &6i32,
-            Nfsstat4::Nfs4errAccess => &13i32,
-            Nfsstat4::Nfs4errExist => &17i32,
-            Nfsstat4::Nfs4errXdev => &18i32,
-            Nfsstat4::Nfs4errNotdir => &20i32,
-            Nfsstat4::Nfs4errIsdir => &21i32,
-            Nfsstat4::Nfs4errInval => &22i32,
-            Nfsstat4::Nfs4errFbig => &27i32,
-            Nfsstat4::Nfs4errNospc => &28i32,
-            Nfsstat4::Nfs4errRofs => &30i32,
-            Nfsstat4::Nfs4errMlink => &31i32,
-            Nfsstat4::Nfs4errNametoolong => &63i32,
-            Nfsstat4::Nfs4errNotempty => &66i32,
-            Nfsstat4::Nfs4errDquot => &69i32,
-            Nfsstat4::Nfs4errStale => &70i32,
-            Nfsstat4::Nfs4errBadhandle => &10001i32,
-            Nfsstat4::Nfs4errBadCookie => &10003i32,
-            Nfsstat4::Nfs4errNotsupp => &10004i32,
-            Nfsstat4::Nfs4errToosmall => &10005i32,
-            Nfsstat4::Nfs4errServerfault => &10006i32,
-            Nfsstat4::Nfs4errBadtype => &10007i32,
-            Nfsstat4::Nfs4errDelay => &10008i32,
-            Nfsstat4::Nfs4errSame => &10009i32,
-            Nfsstat4::Nfs4errDenied => &10010i32,
-            Nfsstat4::Nfs4errExpired => &10011i32,
-            Nfsstat4::Nfs4errLocked => &10012i32,
-            Nfsstat4::Nfs4errGrace => &10013i32,
-            Nfsstat4::Nfs4errFhexpired => &10014i32,
-            Nfsstat4::Nfs4errShareDenied => &10015i32,
-            Nfsstat4::Nfs4errWrongsec => &10016i32,
-            Nfsstat4::Nfs4errClidInuse => &10017i32,
-            Nfsstat4::Nfs4errResource => &10018i32,
-            Nfsstat4::Nfs4errMoved => &10019i32,
-            Nfsstat4::Nfs4errNofilehandle => &10020i32,
-            Nfsstat4::Nfs4errMinorVersMismatch => &10021i32,
-            Nfsstat4::Nfs4errStaleClientid => &10022i32,
-            Nfsstat4::Nfs4errStaleStateid => &10023i32,
-            Nfsstat4::Nfs4errOldStateid => &10024i32,
-            Nfsstat4::Nfs4errBadStateid => &10025i32,
-            Nfsstat4::Nfs4errBadSeqid => &10026i32,
-            Nfsstat4::Nfs4errNotSame => &10027i32,
-            Nfsstat4::Nfs4errLockRange => &10028i32,
-            Nfsstat4::Nfs4errSymlink => &10029i32,
-            Nfsstat4::Nfs4errRestorefh => &10030i32,
-            Nfsstat4::Nfs4errLeaseMoved => &10031i32,
-            Nfsstat4::Nfs4errAttrnotsupp => &10032i32,
-            Nfsstat4::Nfs4errNoGrace => &10033i32,
-            Nfsstat4::Nfs4errReclaimBad => &10034i32,
-            Nfsstat4::Nfs4errReclaimConflict => &10035i32,
-            Nfsstat4::Nfs4errBadxdr => &10036i32,
-            Nfsstat4::Nfs4errLocksHeld => &10037i32,
-            Nfsstat4::Nfs4errOpenmode => &10038i32,
-            Nfsstat4::Nfs4errBadowner => &10039i32,
-            Nfsstat4::Nfs4errBadchar => &10040i32,
-            Nfsstat4::Nfs4errBadname => &10041i32,
-            Nfsstat4::Nfs4errBadRange => &10042i32,
-            Nfsstat4::Nfs4errLockNotsupp => &10043i32,
-            Nfsstat4::Nfs4errOpIllegal => &10044i32,
-            Nfsstat4::Nfs4errDeadlock => &10045i32,
-            Nfsstat4::Nfs4errFileOpen => &10046i32,
-            Nfsstat4::Nfs4errAdminRevoked => &10047i32,
-            Nfsstat4::Nfs4errCbPathDown => &10048i32,
+impl XdrIndexer for Nfsstat4 {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            0i32 => Ok(stringify!(Nfs4Ok)),
+            1i32 => Ok(stringify!(Nfs4errPerm)),
+            2i32 => Ok(stringify!(Nfs4errNoent)),
+            5i32 => Ok(stringify!(Nfs4errIo)),
+            6i32 => Ok(stringify!(Nfs4errNxio)),
+            13i32 => Ok(stringify!(Nfs4errAccess)),
+            17i32 => Ok(stringify!(Nfs4errExist)),
+            18i32 => Ok(stringify!(Nfs4errXdev)),
+            20i32 => Ok(stringify!(Nfs4errNotdir)),
+            21i32 => Ok(stringify!(Nfs4errIsdir)),
+            22i32 => Ok(stringify!(Nfs4errInval)),
+            27i32 => Ok(stringify!(Nfs4errFbig)),
+            28i32 => Ok(stringify!(Nfs4errNospc)),
+            30i32 => Ok(stringify!(Nfs4errRofs)),
+            31i32 => Ok(stringify!(Nfs4errMlink)),
+            63i32 => Ok(stringify!(Nfs4errNametoolong)),
+            66i32 => Ok(stringify!(Nfs4errNotempty)),
+            69i32 => Ok(stringify!(Nfs4errDquot)),
+            70i32 => Ok(stringify!(Nfs4errStale)),
+            10001i32 => Ok(stringify!(Nfs4errBadhandle)),
+            10003i32 => Ok(stringify!(Nfs4errBadCookie)),
+            10004i32 => Ok(stringify!(Nfs4errNotsupp)),
+            10005i32 => Ok(stringify!(Nfs4errToosmall)),
+            10006i32 => Ok(stringify!(Nfs4errServerfault)),
+            10007i32 => Ok(stringify!(Nfs4errBadtype)),
+            10008i32 => Ok(stringify!(Nfs4errDelay)),
+            10009i32 => Ok(stringify!(Nfs4errSame)),
+            10010i32 => Ok(stringify!(Nfs4errDenied)),
+            10011i32 => Ok(stringify!(Nfs4errExpired)),
+            10012i32 => Ok(stringify!(Nfs4errLocked)),
+            10013i32 => Ok(stringify!(Nfs4errGrace)),
+            10014i32 => Ok(stringify!(Nfs4errFhexpired)),
+            10015i32 => Ok(stringify!(Nfs4errShareDenied)),
+            10016i32 => Ok(stringify!(Nfs4errWrongsec)),
+            10017i32 => Ok(stringify!(Nfs4errClidInuse)),
+            10018i32 => Ok(stringify!(Nfs4errResource)),
+            10019i32 => Ok(stringify!(Nfs4errMoved)),
+            10020i32 => Ok(stringify!(Nfs4errNofilehandle)),
+            10021i32 => Ok(stringify!(Nfs4errMinorVersMismatch)),
+            10022i32 => Ok(stringify!(Nfs4errStaleClientid)),
+            10023i32 => Ok(stringify!(Nfs4errStaleStateid)),
+            10024i32 => Ok(stringify!(Nfs4errOldStateid)),
+            10025i32 => Ok(stringify!(Nfs4errBadStateid)),
+            10026i32 => Ok(stringify!(Nfs4errBadSeqid)),
+            10027i32 => Ok(stringify!(Nfs4errNotSame)),
+            10028i32 => Ok(stringify!(Nfs4errLockRange)),
+            10029i32 => Ok(stringify!(Nfs4errSymlink)),
+            10030i32 => Ok(stringify!(Nfs4errRestorefh)),
+            10031i32 => Ok(stringify!(Nfs4errLeaseMoved)),
+            10032i32 => Ok(stringify!(Nfs4errAttrnotsupp)),
+            10033i32 => Ok(stringify!(Nfs4errNoGrace)),
+            10034i32 => Ok(stringify!(Nfs4errReclaimBad)),
+            10035i32 => Ok(stringify!(Nfs4errReclaimConflict)),
+            10036i32 => Ok(stringify!(Nfs4errBadxdr)),
+            10037i32 => Ok(stringify!(Nfs4errLocksHeld)),
+            10038i32 => Ok(stringify!(Nfs4errOpenmode)),
+            10039i32 => Ok(stringify!(Nfs4errBadowner)),
+            10040i32 => Ok(stringify!(Nfs4errBadchar)),
+            10041i32 => Ok(stringify!(Nfs4errBadname)),
+            10042i32 => Ok(stringify!(Nfs4errBadRange)),
+            10043i32 => Ok(stringify!(Nfs4errLockNotsupp)),
+            10044i32 => Ok(stringify!(Nfs4errOpIllegal)),
+            10045i32 => Ok(stringify!(Nfs4errDeadlock)),
+            10046i32 => Ok(stringify!(Nfs4errFileOpen)),
+            10047i32 => Ok(stringify!(Nfs4errAdminRevoked)),
+            10048i32 => Ok(stringify!(Nfs4errCbPathDown)),
+            _ => Ok(stringify!(Nfs4Ok)),
         }
     }
-}
-impl TryFrom<i32> for Nfsstat4 {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            0i32 => Ok(Nfsstat4::Nfs4Ok),
-            1i32 => Ok(Nfsstat4::Nfs4errPerm),
-            2i32 => Ok(Nfsstat4::Nfs4errNoent),
-            5i32 => Ok(Nfsstat4::Nfs4errIo),
-            6i32 => Ok(Nfsstat4::Nfs4errNxio),
-            13i32 => Ok(Nfsstat4::Nfs4errAccess),
-            17i32 => Ok(Nfsstat4::Nfs4errExist),
-            18i32 => Ok(Nfsstat4::Nfs4errXdev),
-            20i32 => Ok(Nfsstat4::Nfs4errNotdir),
-            21i32 => Ok(Nfsstat4::Nfs4errIsdir),
-            22i32 => Ok(Nfsstat4::Nfs4errInval),
-            27i32 => Ok(Nfsstat4::Nfs4errFbig),
-            28i32 => Ok(Nfsstat4::Nfs4errNospc),
-            30i32 => Ok(Nfsstat4::Nfs4errRofs),
-            31i32 => Ok(Nfsstat4::Nfs4errMlink),
-            63i32 => Ok(Nfsstat4::Nfs4errNametoolong),
-            66i32 => Ok(Nfsstat4::Nfs4errNotempty),
-            69i32 => Ok(Nfsstat4::Nfs4errDquot),
-            70i32 => Ok(Nfsstat4::Nfs4errStale),
-            10001i32 => Ok(Nfsstat4::Nfs4errBadhandle),
-            10003i32 => Ok(Nfsstat4::Nfs4errBadCookie),
-            10004i32 => Ok(Nfsstat4::Nfs4errNotsupp),
-            10005i32 => Ok(Nfsstat4::Nfs4errToosmall),
-            10006i32 => Ok(Nfsstat4::Nfs4errServerfault),
-            10007i32 => Ok(Nfsstat4::Nfs4errBadtype),
-            10008i32 => Ok(Nfsstat4::Nfs4errDelay),
-            10009i32 => Ok(Nfsstat4::Nfs4errSame),
-            10010i32 => Ok(Nfsstat4::Nfs4errDenied),
-            10011i32 => Ok(Nfsstat4::Nfs4errExpired),
-            10012i32 => Ok(Nfsstat4::Nfs4errLocked),
-            10013i32 => Ok(Nfsstat4::Nfs4errGrace),
-            10014i32 => Ok(Nfsstat4::Nfs4errFhexpired),
-            10015i32 => Ok(Nfsstat4::Nfs4errShareDenied),
-            10016i32 => Ok(Nfsstat4::Nfs4errWrongsec),
-            10017i32 => Ok(Nfsstat4::Nfs4errClidInuse),
-            10018i32 => Ok(Nfsstat4::Nfs4errResource),
-            10019i32 => Ok(Nfsstat4::Nfs4errMoved),
-            10020i32 => Ok(Nfsstat4::Nfs4errNofilehandle),
-            10021i32 => Ok(Nfsstat4::Nfs4errMinorVersMismatch),
-            10022i32 => Ok(Nfsstat4::Nfs4errStaleClientid),
-            10023i32 => Ok(Nfsstat4::Nfs4errStaleStateid),
-            10024i32 => Ok(Nfsstat4::Nfs4errOldStateid),
-            10025i32 => Ok(Nfsstat4::Nfs4errBadStateid),
-            10026i32 => Ok(Nfsstat4::Nfs4errBadSeqid),
-            10027i32 => Ok(Nfsstat4::Nfs4errNotSame),
-            10028i32 => Ok(Nfsstat4::Nfs4errLockRange),
-            10029i32 => Ok(Nfsstat4::Nfs4errSymlink),
-            10030i32 => Ok(Nfsstat4::Nfs4errRestorefh),
-            10031i32 => Ok(Nfsstat4::Nfs4errLeaseMoved),
-            10032i32 => Ok(Nfsstat4::Nfs4errAttrnotsupp),
-            10033i32 => Ok(Nfsstat4::Nfs4errNoGrace),
-            10034i32 => Ok(Nfsstat4::Nfs4errReclaimBad),
-            10035i32 => Ok(Nfsstat4::Nfs4errReclaimConflict),
-            10036i32 => Ok(Nfsstat4::Nfs4errBadxdr),
-            10037i32 => Ok(Nfsstat4::Nfs4errLocksHeld),
-            10038i32 => Ok(Nfsstat4::Nfs4errOpenmode),
-            10039i32 => Ok(Nfsstat4::Nfs4errBadowner),
-            10040i32 => Ok(Nfsstat4::Nfs4errBadchar),
-            10041i32 => Ok(Nfsstat4::Nfs4errBadname),
-            10042i32 => Ok(Nfsstat4::Nfs4errBadRange),
-            10043i32 => Ok(Nfsstat4::Nfs4errLockNotsupp),
-            10044i32 => Ok(Nfsstat4::Nfs4errOpIllegal),
-            10045i32 => Ok(Nfsstat4::Nfs4errDeadlock),
-            10046i32 => Ok(Nfsstat4::Nfs4errFileOpen),
-            10047i32 => Ok(Nfsstat4::Nfs4errAdminRevoked),
-            10048i32 => Ok(Nfsstat4::Nfs4errCbPathDown),
-            _ => Err(serde_xdr::error::Error::Convert),
+    fn index(&self) -> i32 {
+        match self {
+            Nfsstat4::Nfs4Ok => 0i32,
+            Nfsstat4::Nfs4errPerm => 1i32,
+            Nfsstat4::Nfs4errNoent => 2i32,
+            Nfsstat4::Nfs4errIo => 5i32,
+            Nfsstat4::Nfs4errNxio => 6i32,
+            Nfsstat4::Nfs4errAccess => 13i32,
+            Nfsstat4::Nfs4errExist => 17i32,
+            Nfsstat4::Nfs4errXdev => 18i32,
+            Nfsstat4::Nfs4errNotdir => 20i32,
+            Nfsstat4::Nfs4errIsdir => 21i32,
+            Nfsstat4::Nfs4errInval => 22i32,
+            Nfsstat4::Nfs4errFbig => 27i32,
+            Nfsstat4::Nfs4errNospc => 28i32,
+            Nfsstat4::Nfs4errRofs => 30i32,
+            Nfsstat4::Nfs4errMlink => 31i32,
+            Nfsstat4::Nfs4errNametoolong => 63i32,
+            Nfsstat4::Nfs4errNotempty => 66i32,
+            Nfsstat4::Nfs4errDquot => 69i32,
+            Nfsstat4::Nfs4errStale => 70i32,
+            Nfsstat4::Nfs4errBadhandle => 10001i32,
+            Nfsstat4::Nfs4errBadCookie => 10003i32,
+            Nfsstat4::Nfs4errNotsupp => 10004i32,
+            Nfsstat4::Nfs4errToosmall => 10005i32,
+            Nfsstat4::Nfs4errServerfault => 10006i32,
+            Nfsstat4::Nfs4errBadtype => 10007i32,
+            Nfsstat4::Nfs4errDelay => 10008i32,
+            Nfsstat4::Nfs4errSame => 10009i32,
+            Nfsstat4::Nfs4errDenied => 10010i32,
+            Nfsstat4::Nfs4errExpired => 10011i32,
+            Nfsstat4::Nfs4errLocked => 10012i32,
+            Nfsstat4::Nfs4errGrace => 10013i32,
+            Nfsstat4::Nfs4errFhexpired => 10014i32,
+            Nfsstat4::Nfs4errShareDenied => 10015i32,
+            Nfsstat4::Nfs4errWrongsec => 10016i32,
+            Nfsstat4::Nfs4errClidInuse => 10017i32,
+            Nfsstat4::Nfs4errResource => 10018i32,
+            Nfsstat4::Nfs4errMoved => 10019i32,
+            Nfsstat4::Nfs4errNofilehandle => 10020i32,
+            Nfsstat4::Nfs4errMinorVersMismatch => 10021i32,
+            Nfsstat4::Nfs4errStaleClientid => 10022i32,
+            Nfsstat4::Nfs4errStaleStateid => 10023i32,
+            Nfsstat4::Nfs4errOldStateid => 10024i32,
+            Nfsstat4::Nfs4errBadStateid => 10025i32,
+            Nfsstat4::Nfs4errBadSeqid => 10026i32,
+            Nfsstat4::Nfs4errNotSame => 10027i32,
+            Nfsstat4::Nfs4errLockRange => 10028i32,
+            Nfsstat4::Nfs4errSymlink => 10029i32,
+            Nfsstat4::Nfs4errRestorefh => 10030i32,
+            Nfsstat4::Nfs4errLeaseMoved => 10031i32,
+            Nfsstat4::Nfs4errAttrnotsupp => 10032i32,
+            Nfsstat4::Nfs4errNoGrace => 10033i32,
+            Nfsstat4::Nfs4errReclaimBad => 10034i32,
+            Nfsstat4::Nfs4errReclaimConflict => 10035i32,
+            Nfsstat4::Nfs4errBadxdr => 10036i32,
+            Nfsstat4::Nfs4errLocksHeld => 10037i32,
+            Nfsstat4::Nfs4errOpenmode => 10038i32,
+            Nfsstat4::Nfs4errBadowner => 10039i32,
+            Nfsstat4::Nfs4errBadchar => 10040i32,
+            Nfsstat4::Nfs4errBadname => 10041i32,
+            Nfsstat4::Nfs4errBadRange => 10042i32,
+            Nfsstat4::Nfs4errLockNotsupp => 10043i32,
+            Nfsstat4::Nfs4errOpIllegal => 10044i32,
+            Nfsstat4::Nfs4errDeadlock => 10045i32,
+            Nfsstat4::Nfs4errFileOpen => 10046i32,
+            Nfsstat4::Nfs4errAdminRevoked => 10047i32,
+            Nfsstat4::Nfs4errCbPathDown => 10048i32,
         }
     }
 }
@@ -410,7 +406,7 @@ pub struct Nfstime4 {
     pub seconds: i64,
     pub nseconds: u32,
 }
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum TimeHow4 {
     SetToServerTime4 = 0i32,
@@ -421,21 +417,19 @@ impl Default for TimeHow4 {
         TimeHow4::SetToServerTime4
     }
 }
-impl AsRef<i32> for TimeHow4 {
-    fn as_ref(&self) -> &'static i32 {
-        match self {
-            TimeHow4::SetToServerTime4 => &0i32,
-            TimeHow4::SetToClientTime4 => &1i32,
+impl XdrIndexer for TimeHow4 {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            0i32 => Ok(stringify!(SetToServerTime4)),
+            1i32 => Ok(stringify!(SetToClientTime4)),
+            _ => Ok(stringify!(SetToServerTime4)),
         }
     }
-}
-impl TryFrom<i32> for TimeHow4 {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            0i32 => Ok(TimeHow4::SetToServerTime4),
-            1i32 => Ok(TimeHow4::SetToClientTime4),
-            _ => Err(serde_xdr::error::Error::Convert),
+    fn index(&self) -> i32 {
+        match self {
+            TimeHow4::SetToServerTime4 => 0i32,
+            TimeHow4::SetToClientTime4 => 1i32,
         }
     }
 }
@@ -538,7 +532,7 @@ pub struct LockOwner4 {
     #[serde(with = "serde_xdr::opaque::variable")]
     pub owner: Vec<u8>,
 }
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum NfsLockType4 {
     ReadLt = 1i32,
@@ -551,25 +545,23 @@ impl Default for NfsLockType4 {
         NfsLockType4::ReadLt
     }
 }
-impl AsRef<i32> for NfsLockType4 {
-    fn as_ref(&self) -> &'static i32 {
-        match self {
-            NfsLockType4::ReadLt => &1i32,
-            NfsLockType4::WriteLt => &2i32,
-            NfsLockType4::ReadwLt => &3i32,
-            NfsLockType4::WritewLt => &4i32,
+impl XdrIndexer for NfsLockType4 {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            1i32 => Ok(stringify!(ReadLt)),
+            2i32 => Ok(stringify!(WriteLt)),
+            3i32 => Ok(stringify!(ReadwLt)),
+            4i32 => Ok(stringify!(WritewLt)),
+            _ => Ok(stringify!(ReadLt)),
         }
     }
-}
-impl TryFrom<i32> for NfsLockType4 {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            1i32 => Ok(NfsLockType4::ReadLt),
-            2i32 => Ok(NfsLockType4::WriteLt),
-            3i32 => Ok(NfsLockType4::ReadwLt),
-            4i32 => Ok(NfsLockType4::WritewLt),
-            _ => Err(serde_xdr::error::Error::Convert),
+    fn index(&self) -> i32 {
+        match self {
+            NfsLockType4::ReadLt => 1i32,
+            NfsLockType4::WriteLt => 2i32,
+            NfsLockType4::ReadwLt => 3i32,
+            NfsLockType4::WritewLt => 4i32,
         }
     }
 }
@@ -754,7 +746,6 @@ pub struct DELEGPURGE4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DELEGPURGE4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -763,7 +754,6 @@ pub struct DELEGRETURN4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DELEGRETURN4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -902,7 +892,6 @@ impl XdrIndexer for Locker4 {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LOCK4args {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub locktype: NfsLockType4,
     pub reclaim: bool,
     pub offset: u64,
@@ -913,7 +902,6 @@ pub struct LOCK4args {
 pub struct LOCK4denied {
     pub offset: u64,
     pub length: u64,
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub locktype: NfsLockType4,
     pub owner: LockOwner4,
 }
@@ -951,7 +939,6 @@ impl XdrIndexer for LOCK4res {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LOCKT4args {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub locktype: NfsLockType4,
     pub offset: u64,
     pub length: u64,
@@ -987,7 +974,6 @@ impl XdrIndexer for LOCKT4res {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LOCKU4args {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub locktype: NfsLockType4,
     pub seqid: u32,
     pub lock_stateid: Stateid4,
@@ -1025,12 +1011,10 @@ pub struct LOOKUP4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LOOKUP4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LOOKUPP4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1039,10 +1023,9 @@ pub struct NVERIFY4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct NVERIFY4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum Createmode4 {
     UNCHECKED4 = 0i32,
@@ -1054,23 +1037,21 @@ impl Default for Createmode4 {
         Createmode4::UNCHECKED4
     }
 }
-impl AsRef<i32> for Createmode4 {
-    fn as_ref(&self) -> &'static i32 {
-        match self {
-            Createmode4::UNCHECKED4 => &0i32,
-            Createmode4::GUARDED4 => &1i32,
-            Createmode4::EXCLUSIVE4 => &2i32,
+impl XdrIndexer for Createmode4 {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            0i32 => Ok(stringify!(UNCHECKED4)),
+            1i32 => Ok(stringify!(GUARDED4)),
+            2i32 => Ok(stringify!(EXCLUSIVE4)),
+            _ => Ok(stringify!(UNCHECKED4)),
         }
     }
-}
-impl TryFrom<i32> for Createmode4 {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            0i32 => Ok(Createmode4::UNCHECKED4),
-            1i32 => Ok(Createmode4::GUARDED4),
-            2i32 => Ok(Createmode4::EXCLUSIVE4),
-            _ => Err(serde_xdr::error::Error::Convert),
+    fn index(&self) -> i32 {
+        match self {
+            Createmode4::UNCHECKED4 => 0i32,
+            Createmode4::GUARDED4 => 1i32,
+            Createmode4::EXCLUSIVE4 => 2i32,
         }
     }
 }
@@ -1103,7 +1084,7 @@ impl XdrIndexer for Createhow4 {
         }
     }
 }
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum Opentype4 {
     Open4Nocreate = 0i32,
@@ -1114,21 +1095,19 @@ impl Default for Opentype4 {
         Opentype4::Open4Nocreate
     }
 }
-impl AsRef<i32> for Opentype4 {
-    fn as_ref(&self) -> &'static i32 {
-        match self {
-            Opentype4::Open4Nocreate => &0i32,
-            Opentype4::Open4Create => &1i32,
+impl XdrIndexer for Opentype4 {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            0i32 => Ok(stringify!(Open4Nocreate)),
+            1i32 => Ok(stringify!(Open4Create)),
+            _ => Ok(stringify!(Open4Nocreate)),
         }
     }
-}
-impl TryFrom<i32> for Opentype4 {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            0i32 => Ok(Opentype4::Open4Nocreate),
-            1i32 => Ok(Opentype4::Open4Create),
-            _ => Err(serde_xdr::error::Error::Convert),
+    fn index(&self) -> i32 {
+        match self {
+            Opentype4::Open4Nocreate => 0i32,
+            Opentype4::Open4Create => 1i32,
         }
     }
 }
@@ -1157,7 +1136,7 @@ impl XdrIndexer for Openflag4 {
         }
     }
 }
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum LimitBy4 {
     NfsLimitSize = 1i32,
@@ -1168,21 +1147,19 @@ impl Default for LimitBy4 {
         LimitBy4::NfsLimitSize
     }
 }
-impl AsRef<i32> for LimitBy4 {
-    fn as_ref(&self) -> &'static i32 {
-        match self {
-            LimitBy4::NfsLimitSize => &1i32,
-            LimitBy4::NfsLimitBlocks => &2i32,
+impl XdrIndexer for LimitBy4 {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            1i32 => Ok(stringify!(NfsLimitSize)),
+            2i32 => Ok(stringify!(NfsLimitBlocks)),
+            _ => Ok(stringify!(NfsLimitSize)),
         }
     }
-}
-impl TryFrom<i32> for LimitBy4 {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            1i32 => Ok(LimitBy4::NfsLimitSize),
-            2i32 => Ok(LimitBy4::NfsLimitBlocks),
-            _ => Err(serde_xdr::error::Error::Convert),
+    fn index(&self) -> i32 {
+        match self {
+            LimitBy4::NfsLimitSize => 1i32,
+            LimitBy4::NfsLimitBlocks => 2i32,
         }
     }
 }
@@ -1217,7 +1194,7 @@ impl XdrIndexer for NfsSpaceLimit4 {
         }
     }
 }
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum OpenDelegationType4 {
     OpenDelegateNone = 0i32,
@@ -1229,27 +1206,25 @@ impl Default for OpenDelegationType4 {
         OpenDelegationType4::OpenDelegateNone
     }
 }
-impl AsRef<i32> for OpenDelegationType4 {
-    fn as_ref(&self) -> &'static i32 {
+impl XdrIndexer for OpenDelegationType4 {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            0i32 => Ok(stringify!(OpenDelegateNone)),
+            1i32 => Ok(stringify!(OpenDelegateRead)),
+            2i32 => Ok(stringify!(OpenDelegateWrite)),
+            _ => Ok(stringify!(OpenDelegateNone)),
+        }
+    }
+    fn index(&self) -> i32 {
         match self {
-            OpenDelegationType4::OpenDelegateNone => &0i32,
-            OpenDelegationType4::OpenDelegateRead => &1i32,
-            OpenDelegationType4::OpenDelegateWrite => &2i32,
+            OpenDelegationType4::OpenDelegateNone => 0i32,
+            OpenDelegationType4::OpenDelegateRead => 1i32,
+            OpenDelegationType4::OpenDelegateWrite => 2i32,
         }
     }
 }
-impl TryFrom<i32> for OpenDelegationType4 {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            0i32 => Ok(OpenDelegationType4::OpenDelegateNone),
-            1i32 => Ok(OpenDelegationType4::OpenDelegateRead),
-            2i32 => Ok(OpenDelegationType4::OpenDelegateWrite),
-            _ => Err(serde_xdr::error::Error::Convert),
-        }
-    }
-}
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum OpenClaimType4 {
     ClaimNull = 0i32,
@@ -1262,25 +1237,23 @@ impl Default for OpenClaimType4 {
         OpenClaimType4::ClaimNull
     }
 }
-impl AsRef<i32> for OpenClaimType4 {
-    fn as_ref(&self) -> &'static i32 {
-        match self {
-            OpenClaimType4::ClaimNull => &0i32,
-            OpenClaimType4::ClaimPrevious => &1i32,
-            OpenClaimType4::ClaimDelegateCur => &2i32,
-            OpenClaimType4::ClaimDelegatePrev => &3i32,
+impl XdrIndexer for OpenClaimType4 {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            0i32 => Ok(stringify!(ClaimNull)),
+            1i32 => Ok(stringify!(ClaimPrevious)),
+            2i32 => Ok(stringify!(ClaimDelegateCur)),
+            3i32 => Ok(stringify!(ClaimDelegatePrev)),
+            _ => Ok(stringify!(ClaimNull)),
         }
     }
-}
-impl TryFrom<i32> for OpenClaimType4 {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            0i32 => Ok(OpenClaimType4::ClaimNull),
-            1i32 => Ok(OpenClaimType4::ClaimPrevious),
-            2i32 => Ok(OpenClaimType4::ClaimDelegateCur),
-            3i32 => Ok(OpenClaimType4::ClaimDelegatePrev),
-            _ => Err(serde_xdr::error::Error::Convert),
+    fn index(&self) -> i32 {
+        match self {
+            OpenClaimType4::ClaimNull => 0i32,
+            OpenClaimType4::ClaimPrevious => 1i32,
+            OpenClaimType4::ClaimDelegateCur => 2i32,
+            OpenClaimType4::ClaimDelegatePrev => 3i32,
         }
     }
 }
@@ -1411,7 +1384,6 @@ pub struct OPENATTR4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OPENATTR4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1491,17 +1463,14 @@ pub struct PUTFH4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PUTFH4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PUTPUBFH4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PUTROOTFH4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1697,24 +1666,21 @@ pub struct RENEW4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RENEW4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RESTOREFH4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SAVEFH4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SECINFO4args {
     pub name: String,
 }
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum RpcGssSvcT {
     RpcGssSvcNone = 1i32,
@@ -1726,23 +1692,21 @@ impl Default for RpcGssSvcT {
         RpcGssSvcT::RpcGssSvcNone
     }
 }
-impl AsRef<i32> for RpcGssSvcT {
-    fn as_ref(&self) -> &'static i32 {
-        match self {
-            RpcGssSvcT::RpcGssSvcNone => &1i32,
-            RpcGssSvcT::RpcGssSvcIntegrity => &2i32,
-            RpcGssSvcT::RpcGssSvcPrivacy => &3i32,
+impl XdrIndexer for RpcGssSvcT {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            1i32 => Ok(stringify!(RpcGssSvcNone)),
+            2i32 => Ok(stringify!(RpcGssSvcIntegrity)),
+            3i32 => Ok(stringify!(RpcGssSvcPrivacy)),
+            _ => Ok(stringify!(RpcGssSvcNone)),
         }
     }
-}
-impl TryFrom<i32> for RpcGssSvcT {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            1i32 => Ok(RpcGssSvcT::RpcGssSvcNone),
-            2i32 => Ok(RpcGssSvcT::RpcGssSvcIntegrity),
-            3i32 => Ok(RpcGssSvcT::RpcGssSvcPrivacy),
-            _ => Err(serde_xdr::error::Error::Convert),
+    fn index(&self) -> i32 {
+        match self {
+            RpcGssSvcT::RpcGssSvcNone => 1i32,
+            RpcGssSvcT::RpcGssSvcIntegrity => 2i32,
+            RpcGssSvcT::RpcGssSvcPrivacy => 3i32,
         }
     }
 }
@@ -1751,7 +1715,6 @@ pub struct RpcsecGssInfo {
     #[serde(with = "serde_xdr::opaque::variable")]
     pub oid: Vec<u8>,
     pub qop: u32,
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub service: RpcGssSvcT,
 }
 #[derive(Clone, Debug, XdrIndexer)]
@@ -1811,7 +1774,6 @@ pub struct SETATTR4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SETATTR4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
     pub attrsset: Vec<u32>,
 }
@@ -1863,7 +1825,6 @@ pub struct SetclientidConfirm4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetclientidConfirm4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1872,10 +1833,9 @@ pub struct VERIFY4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct VERIFY4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum StableHow4 {
     UNSTABLE4 = 0i32,
@@ -1887,23 +1847,21 @@ impl Default for StableHow4 {
         StableHow4::UNSTABLE4
     }
 }
-impl AsRef<i32> for StableHow4 {
-    fn as_ref(&self) -> &'static i32 {
-        match self {
-            StableHow4::UNSTABLE4 => &0i32,
-            StableHow4::DataSync4 => &1i32,
-            StableHow4::FileSync4 => &2i32,
+impl XdrIndexer for StableHow4 {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            0i32 => Ok(stringify!(UNSTABLE4)),
+            1i32 => Ok(stringify!(DataSync4)),
+            2i32 => Ok(stringify!(FileSync4)),
+            _ => Ok(stringify!(UNSTABLE4)),
         }
     }
-}
-impl TryFrom<i32> for StableHow4 {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            0i32 => Ok(StableHow4::UNSTABLE4),
-            1i32 => Ok(StableHow4::DataSync4),
-            2i32 => Ok(StableHow4::FileSync4),
-            _ => Err(serde_xdr::error::Error::Convert),
+    fn index(&self) -> i32 {
+        match self {
+            StableHow4::UNSTABLE4 => 0i32,
+            StableHow4::DataSync4 => 1i32,
+            StableHow4::FileSync4 => 2i32,
         }
     }
 }
@@ -1911,7 +1869,6 @@ impl TryFrom<i32> for StableHow4 {
 pub struct WRITE4args {
     pub stateid: Stateid4,
     pub offset: u64,
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub stable: StableHow4,
     #[serde(with = "serde_xdr::opaque::variable")]
     pub data: Vec<u8>,
@@ -1919,7 +1876,6 @@ pub struct WRITE4args {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WRITE4resok {
     pub count: u32,
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub committed: StableHow4,
     #[serde(with = "serde_xdr::opaque::fixed")]
     pub writeverf: [u8; NFS4_VERIFIER_SIZE as usize],
@@ -1955,15 +1911,13 @@ pub struct ReleaseLockowner4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ReleaseLockowner4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ILLEGAL4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum NfsOpnum4 {
     OpAccess = 3i32,
@@ -2010,93 +1964,91 @@ impl Default for NfsOpnum4 {
         NfsOpnum4::OpAccess
     }
 }
-impl AsRef<i32> for NfsOpnum4 {
-    fn as_ref(&self) -> &'static i32 {
-        match self {
-            NfsOpnum4::OpAccess => &3i32,
-            NfsOpnum4::OpClose => &4i32,
-            NfsOpnum4::OpCommit => &5i32,
-            NfsOpnum4::OpCreate => &6i32,
-            NfsOpnum4::OpDelegpurge => &7i32,
-            NfsOpnum4::OpDelegreturn => &8i32,
-            NfsOpnum4::OpGetattr => &9i32,
-            NfsOpnum4::OpGetfh => &10i32,
-            NfsOpnum4::OpLink => &11i32,
-            NfsOpnum4::OpLock => &12i32,
-            NfsOpnum4::OpLockt => &13i32,
-            NfsOpnum4::OpLocku => &14i32,
-            NfsOpnum4::OpLookup => &15i32,
-            NfsOpnum4::OpLookupp => &16i32,
-            NfsOpnum4::OpNverify => &17i32,
-            NfsOpnum4::OpOpen => &18i32,
-            NfsOpnum4::OpOpenattr => &19i32,
-            NfsOpnum4::OpOpenConfirm => &20i32,
-            NfsOpnum4::OpOpenDowngrade => &21i32,
-            NfsOpnum4::OpPutfh => &22i32,
-            NfsOpnum4::OpPutpubfh => &23i32,
-            NfsOpnum4::OpPutrootfh => &24i32,
-            NfsOpnum4::OpRead => &25i32,
-            NfsOpnum4::OpReaddir => &26i32,
-            NfsOpnum4::OpReadlink => &27i32,
-            NfsOpnum4::OpRemove => &28i32,
-            NfsOpnum4::OpRename => &29i32,
-            NfsOpnum4::OpRenew => &30i32,
-            NfsOpnum4::OpRestorefh => &31i32,
-            NfsOpnum4::OpSavefh => &32i32,
-            NfsOpnum4::OpSecinfo => &33i32,
-            NfsOpnum4::OpSetattr => &34i32,
-            NfsOpnum4::OpSetclientid => &35i32,
-            NfsOpnum4::OpSetclientidConfirm => &36i32,
-            NfsOpnum4::OpVerify => &37i32,
-            NfsOpnum4::OpWrite => &38i32,
-            NfsOpnum4::OpReleaseLockowner => &39i32,
-            NfsOpnum4::OpIllegal => &10044i32,
+impl XdrIndexer for NfsOpnum4 {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            3i32 => Ok(stringify!(OpAccess)),
+            4i32 => Ok(stringify!(OpClose)),
+            5i32 => Ok(stringify!(OpCommit)),
+            6i32 => Ok(stringify!(OpCreate)),
+            7i32 => Ok(stringify!(OpDelegpurge)),
+            8i32 => Ok(stringify!(OpDelegreturn)),
+            9i32 => Ok(stringify!(OpGetattr)),
+            10i32 => Ok(stringify!(OpGetfh)),
+            11i32 => Ok(stringify!(OpLink)),
+            12i32 => Ok(stringify!(OpLock)),
+            13i32 => Ok(stringify!(OpLockt)),
+            14i32 => Ok(stringify!(OpLocku)),
+            15i32 => Ok(stringify!(OpLookup)),
+            16i32 => Ok(stringify!(OpLookupp)),
+            17i32 => Ok(stringify!(OpNverify)),
+            18i32 => Ok(stringify!(OpOpen)),
+            19i32 => Ok(stringify!(OpOpenattr)),
+            20i32 => Ok(stringify!(OpOpenConfirm)),
+            21i32 => Ok(stringify!(OpOpenDowngrade)),
+            22i32 => Ok(stringify!(OpPutfh)),
+            23i32 => Ok(stringify!(OpPutpubfh)),
+            24i32 => Ok(stringify!(OpPutrootfh)),
+            25i32 => Ok(stringify!(OpRead)),
+            26i32 => Ok(stringify!(OpReaddir)),
+            27i32 => Ok(stringify!(OpReadlink)),
+            28i32 => Ok(stringify!(OpRemove)),
+            29i32 => Ok(stringify!(OpRename)),
+            30i32 => Ok(stringify!(OpRenew)),
+            31i32 => Ok(stringify!(OpRestorefh)),
+            32i32 => Ok(stringify!(OpSavefh)),
+            33i32 => Ok(stringify!(OpSecinfo)),
+            34i32 => Ok(stringify!(OpSetattr)),
+            35i32 => Ok(stringify!(OpSetclientid)),
+            36i32 => Ok(stringify!(OpSetclientidConfirm)),
+            37i32 => Ok(stringify!(OpVerify)),
+            38i32 => Ok(stringify!(OpWrite)),
+            39i32 => Ok(stringify!(OpReleaseLockowner)),
+            10044i32 => Ok(stringify!(OpIllegal)),
+            _ => Ok(stringify!(OpAccess)),
         }
     }
-}
-impl TryFrom<i32> for NfsOpnum4 {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            3i32 => Ok(NfsOpnum4::OpAccess),
-            4i32 => Ok(NfsOpnum4::OpClose),
-            5i32 => Ok(NfsOpnum4::OpCommit),
-            6i32 => Ok(NfsOpnum4::OpCreate),
-            7i32 => Ok(NfsOpnum4::OpDelegpurge),
-            8i32 => Ok(NfsOpnum4::OpDelegreturn),
-            9i32 => Ok(NfsOpnum4::OpGetattr),
-            10i32 => Ok(NfsOpnum4::OpGetfh),
-            11i32 => Ok(NfsOpnum4::OpLink),
-            12i32 => Ok(NfsOpnum4::OpLock),
-            13i32 => Ok(NfsOpnum4::OpLockt),
-            14i32 => Ok(NfsOpnum4::OpLocku),
-            15i32 => Ok(NfsOpnum4::OpLookup),
-            16i32 => Ok(NfsOpnum4::OpLookupp),
-            17i32 => Ok(NfsOpnum4::OpNverify),
-            18i32 => Ok(NfsOpnum4::OpOpen),
-            19i32 => Ok(NfsOpnum4::OpOpenattr),
-            20i32 => Ok(NfsOpnum4::OpOpenConfirm),
-            21i32 => Ok(NfsOpnum4::OpOpenDowngrade),
-            22i32 => Ok(NfsOpnum4::OpPutfh),
-            23i32 => Ok(NfsOpnum4::OpPutpubfh),
-            24i32 => Ok(NfsOpnum4::OpPutrootfh),
-            25i32 => Ok(NfsOpnum4::OpRead),
-            26i32 => Ok(NfsOpnum4::OpReaddir),
-            27i32 => Ok(NfsOpnum4::OpReadlink),
-            28i32 => Ok(NfsOpnum4::OpRemove),
-            29i32 => Ok(NfsOpnum4::OpRename),
-            30i32 => Ok(NfsOpnum4::OpRenew),
-            31i32 => Ok(NfsOpnum4::OpRestorefh),
-            32i32 => Ok(NfsOpnum4::OpSavefh),
-            33i32 => Ok(NfsOpnum4::OpSecinfo),
-            34i32 => Ok(NfsOpnum4::OpSetattr),
-            35i32 => Ok(NfsOpnum4::OpSetclientid),
-            36i32 => Ok(NfsOpnum4::OpSetclientidConfirm),
-            37i32 => Ok(NfsOpnum4::OpVerify),
-            38i32 => Ok(NfsOpnum4::OpWrite),
-            39i32 => Ok(NfsOpnum4::OpReleaseLockowner),
-            10044i32 => Ok(NfsOpnum4::OpIllegal),
-            _ => Err(serde_xdr::error::Error::Convert),
+    fn index(&self) -> i32 {
+        match self {
+            NfsOpnum4::OpAccess => 3i32,
+            NfsOpnum4::OpClose => 4i32,
+            NfsOpnum4::OpCommit => 5i32,
+            NfsOpnum4::OpCreate => 6i32,
+            NfsOpnum4::OpDelegpurge => 7i32,
+            NfsOpnum4::OpDelegreturn => 8i32,
+            NfsOpnum4::OpGetattr => 9i32,
+            NfsOpnum4::OpGetfh => 10i32,
+            NfsOpnum4::OpLink => 11i32,
+            NfsOpnum4::OpLock => 12i32,
+            NfsOpnum4::OpLockt => 13i32,
+            NfsOpnum4::OpLocku => 14i32,
+            NfsOpnum4::OpLookup => 15i32,
+            NfsOpnum4::OpLookupp => 16i32,
+            NfsOpnum4::OpNverify => 17i32,
+            NfsOpnum4::OpOpen => 18i32,
+            NfsOpnum4::OpOpenattr => 19i32,
+            NfsOpnum4::OpOpenConfirm => 20i32,
+            NfsOpnum4::OpOpenDowngrade => 21i32,
+            NfsOpnum4::OpPutfh => 22i32,
+            NfsOpnum4::OpPutpubfh => 23i32,
+            NfsOpnum4::OpPutrootfh => 24i32,
+            NfsOpnum4::OpRead => 25i32,
+            NfsOpnum4::OpReaddir => 26i32,
+            NfsOpnum4::OpReadlink => 27i32,
+            NfsOpnum4::OpRemove => 28i32,
+            NfsOpnum4::OpRename => 29i32,
+            NfsOpnum4::OpRenew => 30i32,
+            NfsOpnum4::OpRestorefh => 31i32,
+            NfsOpnum4::OpSavefh => 32i32,
+            NfsOpnum4::OpSecinfo => 33i32,
+            NfsOpnum4::OpSetattr => 34i32,
+            NfsOpnum4::OpSetclientid => 35i32,
+            NfsOpnum4::OpSetclientidConfirm => 36i32,
+            NfsOpnum4::OpVerify => 37i32,
+            NfsOpnum4::OpWrite => 38i32,
+            NfsOpnum4::OpReleaseLockowner => 39i32,
+            NfsOpnum4::OpIllegal => 10044i32,
         }
     }
 }
@@ -2376,7 +2328,6 @@ pub struct COMPOUND4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct COMPOUND4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
     pub tag: String,
     pub resarray: Vec<NfsResop4>,
@@ -2425,15 +2376,13 @@ pub struct CbRecall4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CbRecall4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CbIllegal4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
 }
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
 pub enum NfsCbOpnum4 {
     OpCbGetattr = 3i32,
@@ -2445,23 +2394,21 @@ impl Default for NfsCbOpnum4 {
         NfsCbOpnum4::OpCbGetattr
     }
 }
-impl AsRef<i32> for NfsCbOpnum4 {
-    fn as_ref(&self) -> &'static i32 {
-        match self {
-            NfsCbOpnum4::OpCbGetattr => &3i32,
-            NfsCbOpnum4::OpCbRecall => &4i32,
-            NfsCbOpnum4::OpCbIllegal => &10044i32,
+impl XdrIndexer for NfsCbOpnum4 {
+    type Error = ::serde_xdr::error::Error;
+    fn name_by_index(index: i32) -> Result<&'static str, Self::Error> {
+        match index {
+            3i32 => Ok(stringify!(OpCbGetattr)),
+            4i32 => Ok(stringify!(OpCbRecall)),
+            10044i32 => Ok(stringify!(OpCbIllegal)),
+            _ => Ok(stringify!(OpCbGetattr)),
         }
     }
-}
-impl TryFrom<i32> for NfsCbOpnum4 {
-    type Error = serde_xdr::error::Error;
-    fn try_from(v: i32) -> Result<Self, serde_xdr::error::Error> {
-        match v {
-            3i32 => Ok(NfsCbOpnum4::OpCbGetattr),
-            4i32 => Ok(NfsCbOpnum4::OpCbRecall),
-            10044i32 => Ok(NfsCbOpnum4::OpCbIllegal),
-            _ => Err(serde_xdr::error::Error::Convert),
+    fn index(&self) -> i32 {
+        match self {
+            NfsCbOpnum4::OpCbGetattr => 3i32,
+            NfsCbOpnum4::OpCbRecall => 4i32,
+            NfsCbOpnum4::OpCbIllegal => 10044i32,
         }
     }
 }
@@ -2491,7 +2438,6 @@ impl XdrIndexer for NfsCbArgop4 {
             NfsCbArgop4::OpCbGetattr(_) => 3i32,
             NfsCbArgop4::OpCbRecall(_) => 4i32,
             NfsCbArgop4::OpCbIllegal => 10044i32,
-            _ => unimplemented!(),
         }
     }
 }
@@ -2521,7 +2467,6 @@ impl XdrIndexer for NfsCbResop4 {
             NfsCbResop4::OpCbGetattr(_) => 3i32,
             NfsCbResop4::OpCbRecall(_) => 4i32,
             NfsCbResop4::OpCbIllegal(_) => 10044i32,
-            _ => unimplemented!(),
         }
     }
 }
@@ -2534,7 +2479,6 @@ pub struct CbCompound4args {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CbCompound4res {
-    #[serde(with = "serde_xdr::primitive::signed32")]
     pub status: Nfsstat4,
     pub tag: String,
     pub resarray: Vec<NfsCbResop4>,

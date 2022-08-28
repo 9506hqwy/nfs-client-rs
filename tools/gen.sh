@@ -2,7 +2,8 @@
 
 set -eu
 
-RPCGEN_BIN="https://github.com/9506hqwy/xdr-rs/releases/download/0.3.0/rpcgen-0.3.0-x86_64-unknown-linux-gnu.tar.gz"
+TOOL_VERSION="0.4.0"
+RPCGEN_BIN="https://github.com/9506hqwy/xdr-rs/releases/download/${TOOL_VERSION}/rpcgen-${TOOL_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
 
 WORKDIR=`mktemp -d`
 trap 'rm -rf ${WORKDIR}' EXIT
@@ -27,5 +28,5 @@ typedef hyper          int64_t;
 typedef unsigned hyper uint64_t;
 EOF
 sed -i -e 's/typedef opaque  utf8string<>/typedef string  utf8string<>/' ${WORKDIR}/rfc7531.x
-${WORKDIR}/rpcgen --use-std-trait --use-extra-trait ${WORKDIR}/rfc7531.x > src/binding.rs
+${WORKDIR}/rpcgen --use-indexer ${WORKDIR}/rfc7531.x > src/binding.rs
 rustfmt src/binding.rs

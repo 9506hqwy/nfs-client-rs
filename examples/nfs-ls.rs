@@ -3,6 +3,7 @@ use clap::{crate_version, Arg, Command};
 use nfs_client::binding;
 use nfs_client::error::Error;
 use nfs_client::Client;
+use serde_xdr::XdrIndexer;
 use std::iter::repeat;
 use std::path::Path;
 use url::Url;
@@ -42,10 +43,9 @@ fn main() -> Result<(), Error> {
     let size_width = size_max_length(&entries);
     for entry in entries {
         let ty = to_i32(entry.attrs.get(&binding::FATTR4_TYPE).unwrap());
-        let ty = binding::NfsFtype4::try_from(ty).unwrap();
         print!(
             "{}",
-            if ty == binding::NfsFtype4::NF4DIR {
+            if ty == binding::NfsFtype4::NF4DIR.index() {
                 "d"
             } else {
                 "-"
