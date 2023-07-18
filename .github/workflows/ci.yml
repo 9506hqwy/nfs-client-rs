@@ -43,7 +43,7 @@ jobs:
         Write-Output "RUST_TARGET=$RUST_TARGET" >> $env:GITHUB_ENV
         Write-Output "ARTIFACT_PATH=nfs-client-${RUST_TARGET}.zip" >> $env:GITHUB_ENV
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3.0.0
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.RUST_TARGET }}
         path: ${{ env.ARTIFACT_PATH }}
