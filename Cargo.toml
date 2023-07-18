@@ -18,8 +18,8 @@ serde_xdr_derive = { git="https://github.com/9506hqwy/xdr-rs", tag="0.3.0" }
 url = "2.2.2"
 
 [dev-dependencies]
-chrono = "*"
-clap = { version="*", features=["cargo"] }
+chrono = "0.4.26"
+clap = { version="3.2.25", features=["cargo"] }
 
 [[example]]
 name = "nfs-ls"
