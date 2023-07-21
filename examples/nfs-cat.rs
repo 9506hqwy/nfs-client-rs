@@ -9,15 +9,15 @@ fn main() -> Result<(), Error> {
         .version(crate_version!())
         .arg(
             Arg::new("url")
-                .validator(check_url)
+                .value_parser(check_url)
                 .required(true)
                 .help("NFSv4 server's URL."),
         )
         .get_matches();
 
-    let url = matches.value_of("url").unwrap();
+    let url = matches.get_one::<Url>("url").unwrap();
 
-    let mut client = Client::new(Url::parse(url).unwrap()).unwrap();
+    let mut client = Client::new(url.clone()).unwrap();
 
     let file = client.read(Some(&Path::new(".")))?;
 
@@ -26,10 +26,10 @@ fn main() -> Result<(), Error> {
     Ok(())
 }
 
-fn check_url(value: &str) -> Result<(), String> {
+fn check_url(value: &str) -> Result<Url, String> {
     let url = Url::parse(value).map_err(|_| format!("Invalid URL: {}", value))?;
     if url.scheme() == "nfs" {
-        Ok(())
+        Ok(url)
     } else {
         Err(format!("Invalid Schema: {}", url.scheme()))
     }
