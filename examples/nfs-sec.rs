@@ -5,7 +5,7 @@ use std::path::Path;
 use url::Url;
 
 fn main() -> Result<(), Error> {
-    let matches = Command::new("ls for NFSv4")
+    let matches = Command::new("sec for NFSv4")
         .version(crate_version!())
         .arg(
             Arg::new("url")
