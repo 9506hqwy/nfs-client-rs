@@ -19,7 +19,7 @@ fn main() -> Result<(), Error> {
 
     let mut client = Client::new(url.clone()).unwrap();
 
-    let file = client.read(Some(&Path::new(".")))?;
+    let file = client.read(Some(Path::new(".")))?;
 
     print!("{}", String::from_utf8_lossy(&file.data));
 

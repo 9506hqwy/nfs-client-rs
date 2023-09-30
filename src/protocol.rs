@@ -282,7 +282,7 @@ pub struct AcceptedReplyMismatchInfo {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub enum AcceptedReplyData {
     #[serde(with = "serde_xdr::opaque::fixed")]
-    SUCCESS([u8; 0usize as usize]),
+    SUCCESS([u8; 0_usize]),
     _Reserved1,
     ProgMismatch(AcceptedReplyMismatchInfo),
     Default,

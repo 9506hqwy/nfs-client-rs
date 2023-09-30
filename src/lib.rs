@@ -286,7 +286,7 @@ fn parse_fattr4(attr: &binding::Fattr4) -> HashMap<u32, Vec<u8>> {
 
     let max_num = 32 * attr.attrmask.len();
     for num in 0..max_num {
-        let index = (num / 32) as usize;
+        let index = num / 32;
         let pos = num % 32;
         if (attr.attrmask[index] & (1 << pos)) > 0 {
             let i = num as u32;

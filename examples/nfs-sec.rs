@@ -19,7 +19,7 @@ fn main() -> Result<(), Error> {
 
     let mut client = Client::new(url.clone()).unwrap();
 
-    let info = client.secinfo(Some(&Path::new(".")))?;
+    let info = client.secinfo(Some(Path::new(".")))?;
     dbg!(info);
 
     Ok(())

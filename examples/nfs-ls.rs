@@ -23,7 +23,7 @@ fn main() -> Result<(), Error> {
 
     let mut client = Client::new(url.clone()).unwrap();
 
-    let handle = client.lookup(Some(&Path::new(".")))?;
+    let handle = client.lookup(Some(Path::new(".")))?;
 
     let attrs = vec![
         binding::FATTR4_TYPE,
@@ -136,7 +136,7 @@ fn to_datetime(value: &[u8]) -> NaiveDateTime {
 }
 
 fn to_string(value: &[u8]) -> String {
-    String::from_utf8(value.iter().take_while(|&c| c != &0).map(|c| *c).collect()).unwrap()
+    String::from_utf8(value.iter().take_while(|&c| c != &0).copied().collect()).unwrap()
 }
 
 fn to_i32(value: &[u8]) -> i32 {
