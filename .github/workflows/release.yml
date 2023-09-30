@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    tags: [ '*' ]
+    tags: [ '**' ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -17,33 +17,73 @@ jobs:
         os: [ubuntu-latest, windows-latest]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+
     - name: Create Artifacts
-      run: cargo build --release --examples --verbose
+      run: |
+        cargo build --release --workspace --all-features --verbose
+        cargo build --release --workspace --all-features --examples --verbose
+
     - name: Create Archive (Ubuntu)
       if: matrix.os == 'ubuntu-latest'
       run: |
         RUST_TARGET=`rustup show active-toolchain | sed -e 's/[^-]*-\(.*\)\s.*/\1/'`
-        tar -C ./target/release/examples/ -zcf nfs-client-${GITHUB_REF_NAME}-${RUST_TARGET}.tar.gz nfs-ls
+
+        mkdir artifacts
+
+        CUR_DIR=$(pwd)
+        LIB_DIR='./target/release'
+        if find ${LIB_DIR} -maxdepth 1 -type f \( -name '*.so' -o -name '*.a' \) | grep . --quiet; then
+            pushd "$LIB_DIR"
+            tar -zcf "${CUR_DIR}/artifacts/${RUST_TARGET}.tar.gz" *.so *.a
+            popd
+        fi
+
+        EXAMPLE_DIR='./target/release/examples/'
+        for EXAMPLE in $(find "$EXAMPLE_DIR" -type f -executable)
+        do
+            BASE_NAME=$(basename "${EXAMPLE}")
+            if [[ ! $BASE_NAME =~ -[a-fA-F0-9]{16}$ ]] ; then
+                tar -C "$EXAMPLE_DIR" -zcf "./artifacts/${BASE_NAME}-${RUST_TARGET}.tar.gz" "$BASE_NAME"
+            fi
+        done
+
         echo "RUST_TARGET=${RUST_TARGET}" >> $GITHUB_ENV
-        echo "ARTIFACT_PATH=nfs-client-${GITHUB_REF_NAME}-${RUST_TARGET}.tar.gz" >> $GITHUB_ENV
+
     - name: Create Archive (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        $RUST_TOOLCHAIN = $(rustup show active-toolchain) -Split '[ -]'
-        $RUST_ARCH=$RUST_TOOLCHAIN[1]
-        $RUST_PLAT=$RUST_TOOLCHAIN[2]
-        $RUST_OS=$RUST_TOOLCHAIN[3]
-        $RUST_ENV=$RUST_TOOLCHAIN[4]
-        $RUST_TARGET="${RUST_ARCH}-${RUST_PLAT}-${RUST_OS}-${RUST_ENV}"
-        Compress-Archive -Path 'target\release\examples\nfs-ls.exe' -DestinationPath "nfs-client-${env:GITHUB_REF_NAME}-${RUST_TARGET}.zip"
+        $RUST_TARGET = $(rustup show active-toolchain) -replace '[^-]*-(?<host>.*)\s.*', '${host}'
+
+        New-Item -Type Directory artifacts
+
+        $TARGETS = @(
+          'target\release\*.exe',
+          'target\release\*.dll',
+          'target\release\*.exp',
+          'target\release\*.lib'
+        )
+        $LIBS = @(Get-Item -Path $TARGETS)
+        if ($LIBS.Length -gt 0) {
+            Compress-Archive -Path $LIBS -DestinationPath ".\artifacts\${RUST_TARGET}.zip"
+        }
+
+        Get-Item -Path 'target\release\examples\*.exe' |% {
+            if ($_.Name.Contains('_') -And (Test-Path (Join-Path $_.Directory $_.Name.Replace('_', '-')))) {
+                return
+            }
+
+            $Name = $_.BaseName;
+            Compress-Archive -Path $_ -DestinationPath ".\artifacts\${Name}-${RUST_TARGET}.zip";
+        }
+
         Write-Output "RUST_TARGET=$RUST_TARGET" >> $env:GITHUB_ENV
-        Write-Output "ARTIFACT_PATH=nfs-client-${env:GITHUB_REF_NAME}-${RUST_TARGET}.zip" >> $env:GITHUB_ENV
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.RUST_TARGET }}
-        path: ${{ env.ARTIFACT_PATH }}
+        path: artifacts/
         retention-days: 1
 
   release:
@@ -53,14 +93,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+
     - uses: actions/download-artifact@v3
       with:
         path: artifacts
+
     - name: Create Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        find ./artifacts -type f
         gh config set prompt disabled
         gh release create ${GITHUB_REF_NAME} ./artifacts/*/*  -t v${GITHUB_REF_NAME} -d

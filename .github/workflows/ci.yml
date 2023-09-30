@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches: [ main ]
-    tags-ignore: [ '*' ]
+    tags-ignore: [ '**' ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -18,33 +18,166 @@ jobs:
         os: [ubuntu-latest, windows-latest]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+
+    - name: Check format
+      if: matrix.os == 'ubuntu-latest'
+      run: cargo fmt --all --check
+
+    - name: Check lint
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        cargo clippy --fix
+        git diff --exit-code --quiet
+
     - name: Run tests
+      env:
+        RUSTFLAGS: '-C instrument-coverage'
       run: cargo test --verbose
+
+    - name: Generate coverage report (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      env:
+        RUSTFLAGS: '-C instrument-coverage'
+      run: |
+        rustup component add llvm-tools-preview
+        dotnet tool install -g dotnet-reportgenerator-globaltool
+
+        TARGET_HOST=$(rustup show active-toolchain | sed -e 's/[^-]*-\(.*\)\s.*/\1/')
+        TEST_BIN=$(cargo test --no-run 2>&1 | grep Executable | cut -d '(' -f 2 | cut -d ')' -f 1)
+
+        $(rustc --print sysroot)/lib/rustlib/${TARGET_HOST}/bin/llvm-profdata merge \
+            --sparse \
+            --output=default.profdata \
+            default_*.profraw
+
+        $(rustc --print sysroot)/lib/rustlib/${TARGET_HOST}/bin/llvm-cov export \
+            --ignore-filename-regex='library/std/src' \
+            --ignore-filename-regex='cargo/registry/src' \
+            --object=${TEST_BIN} \
+            --instr-profile=default.profdata \
+            --format=lcov \
+            > coverage.lcov
+
+        reportgenerator -reports:coverage.lcov -targetdir:"./artifacts" -reporttypes:"MarkdownSummaryGithub;TextSummary"
+
+        reportgenerator -reports:coverage.lcov -targetdir:"./coverage_html" -reporttypes:"Html"
+        tar -C coverage_html -zcf ./artifacts/coverage.tar.gz .
+
+        $(rustc --print sysroot)/lib/rustlib/${TARGET_HOST}/bin/llvm-cov report \
+            --ignore-filename-regex='library/std/src' \
+            --ignore-filename-regex='cargo/registry/src' \
+            --object=${TEST_BIN} \
+            --instr-profile=default.profdata
+
+    - name: Generate coverage report (Windows)
+      if: matrix.os == 'windows-latest'
+      env:
+        RUSTFLAGS: '-C instrument-coverage'
+      run: |
+        rustup component add llvm-tools-preview
+        dotnet tool install -g dotnet-reportgenerator-globaltool
+
+        $TARGET_HOST = $(rustup show active-toolchain) -replace '[^-]*-(?<host>.*)\s.*', '${host}'
+        $TEST_BIN = ($(cargo test --no-run 2>&1) |? { "$_" -like '*Executable*' }) -replace '.*\((?<path>.*)\).*', '${path}'
+
+        $profiles = @(Get-ChildItem -Path 'default_*.profraw' -Recurse)
+
+        & "$(rustc --print sysroot)\lib\rustlib\${TARGET_HOST}\bin\llvm-profdata.exe" merge `
+            --sparse `
+            --output=default.profdata `
+            @($profiles |% { $_.FullName })
+
+        & "$(rustc --print sysroot)\lib\rustlib\${TARGET_HOST}\bin\llvm-cov.exe" export `
+            --ignore-filename-regex='library\\std\\src' `
+            --ignore-filename-regex='cargo\\registry\\src' `
+            --object=${TEST_BIN} `
+            --instr-profile=default.profdata `
+            --format=lcov `
+            > coverage.lcov
+
+        reportgenerator -reports:coverage.lcov -targetdir:".\artifacts" -reporttypes:"MarkdownSummaryGithub;TextSummary"
+
+        reportgenerator -reports:coverage.lcov -targetdir:".\coverage_html" -reporttypes:"Html"
+        Compress-Archive -Path 'coverage_html\*' -DestinationPath ".\artifacts\coverage.zip"
+
+        & "$(rustc --print sysroot)\lib\rustlib\${TARGET_HOST}\bin\llvm-cov.exe" report `
+            --ignore-filename-regex='library\\std\\src' `
+            --ignore-filename-regex='cargo\\registry\\src' `
+            --object=${TEST_BIN} `
+            --instr-profile=default.profdata
+
+    - name: Report coverage (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        cat "./artifacts/Summary.txt"
+        cat "./artifacts/SummaryGithub.md" > $GITHUB_STEP_SUMMARY
+
+    - name: Report coverage (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        Get-Content ".\artifacts\Summary.txt"
+        Get-Content ".\artifacts\SummaryGithub.md" > $env:GITHUB_STEP_SUMMARY
+
     - name: Create Artifacts
-      run: cargo build --release --examples --verbose
+      run: |
+        cargo build --release --workspace --all-features --verbose
+        cargo build --release --workspace --all-features --examples --verbose
+
     - name: Create Archive (Ubuntu)
       if: matrix.os == 'ubuntu-latest'
       run: |
         RUST_TARGET=`rustup show active-toolchain | sed -e 's/[^-]*-\(.*\)\s.*/\1/'`
-        tar -C ./target/release/examples/ -zcf nfs-client-${RUST_TARGET}.tar.gz nfs-ls
+
+        CUR_DIR=$(pwd)
+        LIB_DIR='./target/release'
+        if find ${LIB_DIR} -maxdepth 1 -type f \( -name '*.so' -o -name '*.a' \) | grep . --quiet; then
+            pushd "$LIB_DIR"
+            tar -zcf "${CUR_DIR}/artifacts/${RUST_TARGET}.tar.gz" *.so *.a
+            popd
+        fi
+
+        EXAMPLE_DIR='./target/release/examples/'
+        for EXAMPLE in $(find "$EXAMPLE_DIR" -type f -executable)
+        do
+            BASE_NAME=$(basename "${EXAMPLE}")
+            if [[ ! $BASE_NAME =~ -[a-fA-F0-9]{16}$ ]] ; then
+                tar -C "$EXAMPLE_DIR" -zcf "./artifacts/${BASE_NAME}-${RUST_TARGET}.tar.gz" "$BASE_NAME"
+            fi
+        done
+
         echo "RUST_TARGET=${RUST_TARGET}" >> $GITHUB_ENV
-        echo "ARTIFACT_PATH=nfs-client-${RUST_TARGET}.tar.gz" >> $GITHUB_ENV
+
     - name: Create Archive (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        $RUST_TOOLCHAIN = $(rustup show active-toolchain) -Split '[ -]'
-        $RUST_ARCH=$RUST_TOOLCHAIN[1]
-        $RUST_PLAT=$RUST_TOOLCHAIN[2]
-        $RUST_OS=$RUST_TOOLCHAIN[3]
-        $RUST_ENV=$RUST_TOOLCHAIN[4]
-        $RUST_TARGET="${RUST_ARCH}-${RUST_PLAT}-${RUST_OS}-${RUST_ENV}"
-        Compress-Archive -Path 'target\release\examples\nfs-ls.exe' -DestinationPath "nfs-client-${RUST_TARGET}.zip"
+        $RUST_TARGET = $(rustup show active-toolchain) -replace '[^-]*-(?<host>.*)\s.*', '${host}'
+
+        $TARGETS = @(
+          'target\release\*.exe',
+          'target\release\*.dll',
+          'target\release\*.exp',
+          'target\release\*.lib'
+        )
+        $LIBS = @(Get-Item -Path $TARGETS)
+        if ($LIBS.Length -gt 0) {
+            Compress-Archive -Path $LIBS -DestinationPath ".\artifacts\${RUST_TARGET}.zip"
+        }
+
+        Get-Item -Path 'target\release\examples\*.exe' |% {
+            if ($_.Name.Contains('_') -And (Test-Path (Join-Path $_.Directory $_.Name.Replace('_', '-')))) {
+                return
+            }
+
+            $Name = $_.BaseName;
+            Compress-Archive -Path $_ -DestinationPath ".\artifacts\${Name}-${RUST_TARGET}.zip";
+        }
+
         Write-Output "RUST_TARGET=$RUST_TARGET" >> $env:GITHUB_ENV
-        Write-Output "ARTIFACT_PATH=nfs-client-${RUST_TARGET}.zip" >> $env:GITHUB_ENV
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.RUST_TARGET }}
-        path: ${{ env.ARTIFACT_PATH }}
+        path: artifacts/
         retention-days: 1
