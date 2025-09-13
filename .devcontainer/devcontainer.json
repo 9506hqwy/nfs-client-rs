@@ -1,0 +1,27 @@
+{
+    // Dev Container's Name.
+    "name": "Rust",
+    // Base Container Image.
+    "image": "mcr.microsoft.com/devcontainers/rust:1-1-bookworm",
+    // For running using Podman.
+    // https://github.com/microsoft/vscode-remote-release/issues/4443
+    "runArgs": [
+        "--userns=keep-id"
+    ],
+    "securityOpt": [
+        "label=disable",
+        "seccomp=unconfined"
+    ],
+    // Use 'onCreateCommand' to run commands after the container is created.
+    "onCreateCommand": "/bin/bash ${containerWorkspaceFolder}/.devcontainer/on-create.sh",
+    // Set session environment variables.
+    "remoteEnv": {
+        "CARGO_PROFILE_RELEASE_DEBUG": "true",
+        "MEMORY_PROFILER_LOG": "debug"
+    },
+    // Uncomment to connect as root instead.
+    //"remoteUser": "root",
+    // Use default container `USER`,
+    // because of avoid reject directory creating by container startup user.
+    "containerUser": "vscode"
+}

@@ -1,10 +1,9 @@
-use chrono::{DateTime, NaiveDateTime, Utc};
-use clap::{crate_version, Arg, Command};
+use chrono::{DateTime, Utc};
+use clap::{Arg, Command, crate_version};
+use nfs_client::Client;
 use nfs_client::binding;
 use nfs_client::error::Error;
-use nfs_client::Client;
 use serde_xdr::XdrIndexer;
-use std::iter::repeat;
 use std::path::Path;
 use url::Url;
 
@@ -65,7 +64,7 @@ fn main() -> Result<(), Error> {
         print!(". ");
 
         let num_links = to_u32(entry.attrs.get(&binding::FATTR4_NUMLINKS).unwrap());
-        print!("{} ", num_links);
+        print!("{num_links} ");
 
         let owner = to_string(entry.attrs.get(&binding::FATTR4_OWNER).unwrap());
         let owner_padding = owner_width - owner.len();
@@ -80,7 +79,6 @@ fn main() -> Result<(), Error> {
         print!("{}{} ", padding(' ', size_padding), size);
 
         let date = to_datetime(entry.attrs.get(&binding::FATTR4_TIME_MODIFY).unwrap());
-        let date = DateTime::<Utc>::from_utc(date, Utc);
         print!("{} ", date.to_rfc2822());
 
         println!("{}", entry.name);
@@ -90,7 +88,7 @@ fn main() -> Result<(), Error> {
 }
 
 fn check_url(value: &str) -> Result<Url, String> {
-    let url = Url::parse(value).map_err(|_| format!("Invalid URL: {}", value))?;
+    let url = Url::parse(value).map_err(|_| format!("Invalid URL: {value}"))?;
     if url.scheme() == "nfs" {
         Ok(url)
     } else {
@@ -126,13 +124,13 @@ fn size_max_length(entries: &[nfs_client::Entry]) -> usize {
 }
 
 pub fn padding(ch: char, len: usize) -> String {
-    repeat(ch).take(len).collect::<String>()
+    std::iter::repeat_n(ch, len).collect::<String>()
 }
 
-fn to_datetime(value: &[u8]) -> NaiveDateTime {
+fn to_datetime(value: &[u8]) -> DateTime<Utc> {
     let secs = i64::from_be_bytes(value[0..8].try_into().unwrap());
     let nsecs = u32::from_be_bytes(value[8..12].try_into().unwrap());
-    NaiveDateTime::from_timestamp_opt(secs, nsecs).unwrap()
+    DateTime::from_timestamp(secs, nsecs).unwrap()
 }
 
 fn to_string(value: &[u8]) -> String {

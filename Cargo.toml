@@ -2,8 +2,8 @@
 name = "nfs_client"
 version = "0.1.0"
 authors = ["9506hqwy"]
-edition = "2021"
-rust-version = "1.60"
+edition = "2024"
+rust-version = "1.85"
 repository = "https://github.com/9506hqwy/nfs-client-rs"
 license = "MIT OR Apache-2.0"
 keywords = ["nfs", "rfc5531", "rfc7862", "rfc7863"]

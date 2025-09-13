@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "davidanson.vscode-markdownlint",
+        "editorconfig.editorconfig",
+        "github.vscode-github-actions",
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
+        "timonwong.shellcheck",
+        "vadimcn.vscode-lldb",
+        "yzhang.markdown-all-in-one"
+    ]
+}

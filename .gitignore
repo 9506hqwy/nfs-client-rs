@@ -1,10 +1,7 @@
 artifacts/
-coverage_html/
 target/
 
-*~
-*.profraw
+memory-profiling*
+perf.data*
 
 Cargo.lock
-coverage.lcov
-default.profdata

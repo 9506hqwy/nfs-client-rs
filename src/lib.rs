@@ -26,7 +26,7 @@ impl Client {
         let port = url.port().unwrap_or(2049);
         let path = PathBuf::from(url.path());
 
-        let addr = format!("{}:{}", host, port);
+        let addr = format!("{host}:{port}");
         let stream = TcpStream::connect(addr)?;
 
         Ok(Client {
@@ -276,7 +276,7 @@ fn fattr4_bitmap(attrs: Vec<u32>) -> Vec<u32> {
 }
 
 fn padded4(value: u32) -> u32 {
-    ((value + 3) / 4) * 4
+    value.div_ceil(4) * 4
 }
 
 fn parse_fattr4(attr: &binding::Fattr4) -> HashMap<u32, Vec<u8>> {

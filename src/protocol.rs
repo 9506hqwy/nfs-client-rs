@@ -1,17 +1,14 @@
 use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum AuthFlavor {
+    #[default]
     AuthNone = 0i32,
     AuthSys = 1i32,
     AuthShort = 2i32,
     AuthDh = 3i32,
     RpcsecGss = 6i32,
-}
-impl Default for AuthFlavor {
-    fn default() -> Self {
-        AuthFlavor::AuthNone
-    }
 }
 impl AsRef<i32> for AuthFlavor {
     fn as_ref(&self) -> &'static i32 {
@@ -46,14 +43,11 @@ pub struct OpaqueAuth {
 }
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum MsgType {
+    #[default]
     CALL = 0i32,
     REPLY = 1i32,
-}
-impl Default for MsgType {
-    fn default() -> Self {
-        MsgType::CALL
-    }
 }
 impl AsRef<i32> for MsgType {
     fn as_ref(&self) -> &'static i32 {
@@ -75,14 +69,11 @@ impl TryFrom<i32> for MsgType {
 }
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum ReplyStat {
+    #[default]
     MsgAccepted = 0i32,
     MsgDenied = 1i32,
-}
-impl Default for ReplyStat {
-    fn default() -> Self {
-        ReplyStat::MsgAccepted
-    }
 }
 impl AsRef<i32> for ReplyStat {
     fn as_ref(&self) -> &'static i32 {
@@ -104,18 +95,15 @@ impl TryFrom<i32> for ReplyStat {
 }
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum AcceptStat {
+    #[default]
     SUCCESS = 0i32,
     ProgUnavail = 1i32,
     ProgMismatch = 2i32,
     ProcUnavail = 3i32,
     GarbageArgs = 4i32,
     SystemErr = 5i32,
-}
-impl Default for AcceptStat {
-    fn default() -> Self {
-        AcceptStat::SUCCESS
-    }
 }
 impl AsRef<i32> for AcceptStat {
     fn as_ref(&self) -> &'static i32 {
@@ -145,14 +133,11 @@ impl TryFrom<i32> for AcceptStat {
 }
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum RejectStat {
+    #[default]
     RpcMismatch = 0i32,
     AuthError = 1i32,
-}
-impl Default for RejectStat {
-    fn default() -> Self {
-        RejectStat::RpcMismatch
-    }
 }
 impl AsRef<i32> for RejectStat {
     fn as_ref(&self) -> &'static i32 {
@@ -174,7 +159,9 @@ impl TryFrom<i32> for RejectStat {
 }
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum AuthStat {
+    #[default]
     AuthOk = 0i32,
     AuthBadcred = 1i32,
     AuthRejectedcred = 2i32,
@@ -190,11 +177,6 @@ pub enum AuthStat {
     AuthNetAddr = 12i32,
     RpcsecGssCredproblem = 13i32,
     RpcsecGssCtxproblem = 14i32,
-}
-impl Default for AuthStat {
-    fn default() -> Self {
-        AuthStat::AuthOk
-    }
 }
 impl AsRef<i32> for AuthStat {
     fn as_ref(&self) -> &'static i32 {
@@ -279,18 +261,14 @@ pub struct AcceptedReplyMismatchInfo {
     pub low: u32,
     pub high: u32,
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, Default)]
 pub enum AcceptedReplyData {
     #[serde(with = "serde_xdr::opaque::fixed")]
     SUCCESS([u8; 0_usize]),
     _Reserved1,
     ProgMismatch(AcceptedReplyMismatchInfo),
+    #[default]
     Default,
-}
-impl Default for AcceptedReplyData {
-    fn default() -> Self {
-        AcceptedReplyData::Default
-    }
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AcceptedReply {

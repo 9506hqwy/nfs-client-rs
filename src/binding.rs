@@ -253,7 +253,9 @@ pub const AUTH_SYS: u32 = 1u32;
 pub const RPCSEC_GSS: u32 = 6u32;
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum NfsFtype4 {
+    #[default]
     NF4REG = 1i32,
     NF4DIR = 2i32,
     NF4BLK = 3i32,
@@ -263,11 +265,6 @@ pub enum NfsFtype4 {
     NF4FIFO = 7i32,
     NF4ATTRDIR = 8i32,
     NF4NAMEDATTR = 9i32,
-}
-impl Default for NfsFtype4 {
-    fn default() -> Self {
-        NfsFtype4::NF4REG
-    }
 }
 impl XdrIndexer for NfsFtype4 {
     type Error = ::serde_xdr::error::Error;
@@ -301,7 +298,9 @@ impl XdrIndexer for NfsFtype4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum Nfsstat4 {
+    #[default]
     Nfs4Ok = 0i32,
     Nfs4errPerm = 1i32,
     Nfs4errNoent = 2i32,
@@ -413,11 +412,6 @@ pub enum Nfsstat4 {
     Nfs4errWrongLfs = 10092i32,
     Nfs4errBadlabel = 10093i32,
     Nfs4errOffloadNoReqs = 10094i32,
-}
-impl Default for Nfsstat4 {
-    fn default() -> Self {
-        Nfsstat4::Nfs4Ok
-    }
 }
 impl XdrIndexer for Nfsstat4 {
     type Error = ::serde_xdr::error::Error;
@@ -660,14 +654,11 @@ pub struct Nfstime4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum TimeHow4 {
+    #[default]
     SetToServerTime4 = 0i32,
     SetToClientTime4 = 1i32,
-}
-impl Default for TimeHow4 {
-    fn default() -> Self {
-        TimeHow4::SetToServerTime4
-    }
 }
 impl XdrIndexer for TimeHow4 {
     type Error = ::serde_xdr::error::Error;
@@ -685,15 +676,11 @@ impl XdrIndexer for TimeHow4 {
         }
     }
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum Settime4 {
     SetToClientTime4(Nfstime4),
+    #[default]
     Default,
-}
-impl Default for Settime4 {
-    fn default() -> Self {
-        Settime4::Default
-    }
 }
 impl XdrIndexer for Settime4 {
     type Error = ::serde_xdr::error::Error;
@@ -771,15 +758,12 @@ pub struct Stateid4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum Layouttype4 {
+    #[default]
     Layout4Nfsv41Files = 1i32,
     Layout4Osd2Objects = 2i32,
     Layout4BlockVolume = 3i32,
-}
-impl Default for Layouttype4 {
-    fn default() -> Self {
-        Layouttype4::Layout4Nfsv41Files
-    }
 }
 impl XdrIndexer for Layouttype4 {
     type Error = ::serde_xdr::error::Error;
@@ -813,15 +797,12 @@ pub struct Layouthint4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum Layoutiomode4 {
+    #[default]
     Layoutiomode4Read = 1i32,
     Layoutiomode4Rw = 2i32,
     Layoutiomode4Any = 3i32,
-}
-impl Default for Layoutiomode4 {
-    fn default() -> Self {
-        Layoutiomode4::Layoutiomode4Read
-    }
 }
 impl XdrIndexer for Layoutiomode4 {
     type Error = ::serde_xdr::error::Error;
@@ -862,15 +843,12 @@ pub struct Layoutupdate4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum LayoutreturnType4 {
+    #[default]
     Layoutreturn4File = 1i32,
     Layoutreturn4Fsid = 2i32,
     Layoutreturn4All = 3i32,
-}
-impl Default for LayoutreturnType4 {
-    fn default() -> Self {
-        LayoutreturnType4::Layoutreturn4File
-    }
 }
 impl XdrIndexer for LayoutreturnType4 {
     type Error = ::serde_xdr::error::Error;
@@ -898,15 +876,11 @@ pub struct LayoutreturnFile4 {
     #[serde(with = "serde_xdr::opaque::variable")]
     pub lrf_body: Vec<u8>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum Layoutreturn4 {
     Layoutreturn4File(LayoutreturnFile4),
+    #[default]
     Default,
-}
-impl Default for Layoutreturn4 {
-    fn default() -> Self {
-        Layoutreturn4::Default
-    }
 }
 impl XdrIndexer for Layoutreturn4 {
     type Error = ::serde_xdr::error::Error;
@@ -925,17 +899,14 @@ impl XdrIndexer for Layoutreturn4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum Fs4StatusType {
+    #[default]
     Status4Fixed = 1i32,
     Status4Updated = 2i32,
     Status4Versioned = 3i32,
     Status4Writable = 4i32,
     Status4Referral = 5i32,
-}
-impl Default for Fs4StatusType {
-    fn default() -> Self {
-        Fs4StatusType::Status4Fixed
-    }
 }
 impl XdrIndexer for Fs4StatusType {
     type Error = ::serde_xdr::error::Error;
@@ -991,15 +962,12 @@ pub struct RetentionSet4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum NetlocType4 {
+    #[default]
     Nl4Name = 1i32,
     Nl4Url = 2i32,
     Nl4Netaddr = 3i32,
-}
-impl Default for NetlocType4 {
-    fn default() -> Self {
-        NetlocType4::Nl4Name
-    }
 }
 impl XdrIndexer for NetlocType4 {
     type Error = ::serde_xdr::error::Error;
@@ -1050,17 +1018,14 @@ impl XdrIndexer for Netloc4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum ChangeAttrType4 {
+    #[default]
     Nfs4ChangeTypeIsMonotonicIncr = 0i32,
     Nfs4ChangeTypeIsVersionCounter = 1i32,
     Nfs4ChangeTypeIsVersionCounterNopnfs = 2i32,
     Nfs4ChangeTypeIsTimeMetadata = 3i32,
     Nfs4ChangeTypeIsUndefined = 4i32,
-}
-impl Default for ChangeAttrType4 {
-    fn default() -> Self {
-        ChangeAttrType4::Nfs4ChangeTypeIsMonotonicIncr
-    }
 }
 impl XdrIndexer for ChangeAttrType4 {
     type Error = ::serde_xdr::error::Error;
@@ -1137,14 +1102,11 @@ pub struct DataInfo4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum DataContent4 {
+    #[default]
     Nfs4ContentData = 0i32,
     Nfs4ContentHole = 1i32,
-}
-impl Default for DataContent4 {
-    fn default() -> Self {
-        DataContent4::Nfs4ContentData
-    }
 }
 impl XdrIndexer for DataContent4 {
     type Error = ::serde_xdr::error::Error;
@@ -1164,15 +1126,12 @@ impl XdrIndexer for DataContent4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum StableHow4 {
+    #[default]
     UNSTABLE4 = 0i32,
     DataSync4 = 1i32,
     FileSync4 = 2i32,
-}
-impl Default for StableHow4 {
-    fn default() -> Self {
-        StableHow4::UNSTABLE4
-    }
 }
 impl XdrIndexer for StableHow4 {
     type Error = ::serde_xdr::error::Error;
@@ -1245,16 +1204,13 @@ pub struct StateOwner4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum NfsLockType4 {
+    #[default]
     ReadLt = 1i32,
     WriteLt = 2i32,
     ReadwLt = 3i32,
     WritewLt = 4i32,
-}
-impl Default for NfsLockType4 {
-    fn default() -> Self {
-        NfsLockType4::ReadLt
-    }
 }
 impl XdrIndexer for NfsLockType4 {
     type Error = ::serde_xdr::error::Error;
@@ -1278,16 +1234,13 @@ impl XdrIndexer for NfsLockType4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum SsvSubkey4 {
+    #[default]
     Ssv4SubkeyMicI2t = 1i32,
     Ssv4SubkeyMicT2i = 2i32,
     Ssv4SubkeySealI2t = 3i32,
     Ssv4SubkeySealT2i = 4i32,
-}
-impl Default for SsvSubkey4 {
-    fn default() -> Self {
-        SsvSubkey4::Ssv4SubkeyMicI2t
-    }
 }
 impl XdrIndexer for SsvSubkey4 {
     type Error = ::serde_xdr::error::Error;
@@ -1362,17 +1315,14 @@ pub struct FsLocationsInfo4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum FilelayoutHintCare4 {
+    #[default]
     Nflh4CareDense = 1i32,
     Nflh4CareCommitThruMds = 2i32,
     Nfl42CareIoAdviseThruMds = 4i32,
     Nflh4CareStripeUnitSize = 64i32,
     Nflh4CareStripeCount = 128i32,
-}
-impl Default for FilelayoutHintCare4 {
-    fn default() -> Self {
-        FilelayoutHintCare4::Nflh4CareDense
-    }
 }
 impl XdrIndexer for FilelayoutHintCare4 {
     type Error = ::serde_xdr::error::Error;
@@ -1418,7 +1368,9 @@ pub struct Nfsv41FileLayout4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum NfsOpnum4 {
+    #[default]
     OpAccess = 3i32,
     OpClose = 4i32,
     OpCommit = 5i32,
@@ -1489,11 +1441,6 @@ pub enum NfsOpnum4 {
     OpWriteSame = 70i32,
     OpClone = 71i32,
     OpIllegal = 10044i32,
-}
-impl Default for NfsOpnum4 {
-    fn default() -> Self {
-        NfsOpnum4::OpAccess
-    }
 }
 impl XdrIndexer for NfsOpnum4 {
     type Error = ::serde_xdr::error::Error;
@@ -1656,15 +1603,11 @@ pub struct ACCESS4resok {
     pub supported: u32,
     pub access: u32,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum ACCESS4res {
     Nfs4Ok(ACCESS4resok),
+    #[default]
     Default,
-}
-impl Default for ACCESS4res {
-    fn default() -> Self {
-        ACCESS4res::Default
-    }
 }
 impl XdrIndexer for ACCESS4res {
     type Error = ::serde_xdr::error::Error;
@@ -1698,15 +1641,11 @@ pub struct CLOSE4args {
     pub seqid: u32,
     pub open_stateid: Stateid4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum CLOSE4res {
     Nfs4Ok(Stateid4),
+    #[default]
     Default,
-}
-impl Default for CLOSE4res {
-    fn default() -> Self {
-        CLOSE4res::Default
-    }
 }
 impl XdrIndexer for CLOSE4res {
     type Error = ::serde_xdr::error::Error;
@@ -1733,15 +1672,11 @@ pub struct COMMIT4resok {
     #[serde(with = "serde_xdr::opaque::fixed")]
     pub writeverf: [u8; NFS4_VERIFIER_SIZE as usize],
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum COMMIT4res {
     Nfs4Ok(COMMIT4resok),
+    #[default]
     Default,
-}
-impl Default for COMMIT4res {
-    fn default() -> Self {
-        COMMIT4res::Default
-    }
 }
 impl XdrIndexer for COMMIT4res {
     type Error = ::serde_xdr::error::Error;
@@ -1758,7 +1693,7 @@ impl XdrIndexer for COMMIT4res {
         }
     }
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum Createtype4 {
     NF4DIR,
     NF4BLK(Specdata4),
@@ -1766,12 +1701,8 @@ pub enum Createtype4 {
     NF4LNK(serde_xdr::opaque::VariableArray),
     NF4SOCK,
     NF4FIFO,
+    #[default]
     Default,
-}
-impl Default for Createtype4 {
-    fn default() -> Self {
-        Createtype4::Default
-    }
 }
 impl XdrIndexer for Createtype4 {
     type Error = ::serde_xdr::error::Error;
@@ -1809,15 +1740,11 @@ pub struct CREATE4resok {
     pub cinfo: ChangeInfo4,
     pub attrset: Vec<u32>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum CREATE4res {
     Nfs4Ok(CREATE4resok),
+    #[default]
     Default,
-}
-impl Default for CREATE4res {
-    fn default() -> Self {
-        CREATE4res::Default
-    }
 }
 impl XdrIndexer for CREATE4res {
     type Error = ::serde_xdr::error::Error;
@@ -1858,15 +1785,11 @@ pub struct GETATTR4args {
 pub struct GETATTR4resok {
     pub obj_attributes: Fattr4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum GETATTR4res {
     Nfs4Ok(GETATTR4resok),
+    #[default]
     Default,
-}
-impl Default for GETATTR4res {
-    fn default() -> Self {
-        GETATTR4res::Default
-    }
 }
 impl XdrIndexer for GETATTR4res {
     type Error = ::serde_xdr::error::Error;
@@ -1888,15 +1811,11 @@ pub struct GETFH4resok {
     #[serde(with = "serde_xdr::opaque::variable")]
     pub object: Vec<u8>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum GETFH4res {
     Nfs4Ok(GETFH4resok),
+    #[default]
     Default,
-}
-impl Default for GETFH4res {
-    fn default() -> Self {
-        GETFH4res::Default
-    }
 }
 impl XdrIndexer for GETFH4res {
     type Error = ::serde_xdr::error::Error;
@@ -1921,15 +1840,11 @@ pub struct LINK4args {
 pub struct LINK4resok {
     pub cinfo: ChangeInfo4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum LINK4res {
     Nfs4Ok(LINK4resok),
+    #[default]
     Default,
-}
-impl Default for LINK4res {
-    fn default() -> Self {
-        LINK4res::Default
-    }
 }
 impl XdrIndexer for LINK4res {
     type Error = ::serde_xdr::error::Error;
@@ -2003,16 +1918,12 @@ pub struct LOCK4denied {
 pub struct LOCK4resok {
     pub lock_stateid: Stateid4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum LOCK4res {
     Nfs4Ok(LOCK4resok),
     Nfs4errDenied(LOCK4denied),
+    #[default]
     Default,
-}
-impl Default for LOCK4res {
-    fn default() -> Self {
-        LOCK4res::Default
-    }
 }
 impl XdrIndexer for LOCK4res {
     type Error = ::serde_xdr::error::Error;
@@ -2038,16 +1949,12 @@ pub struct LOCKT4args {
     pub length: u64,
     pub owner: StateOwner4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum LOCKT4res {
     Nfs4Ok,
     Nfs4errDenied(LOCK4denied),
+    #[default]
     Default,
-}
-impl Default for LOCKT4res {
-    fn default() -> Self {
-        LOCKT4res::Default
-    }
 }
 impl XdrIndexer for LOCKT4res {
     type Error = ::serde_xdr::error::Error;
@@ -2074,15 +1981,11 @@ pub struct LOCKU4args {
     pub offset: u64,
     pub length: u64,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum LOCKU4res {
     Nfs4Ok(Stateid4),
+    #[default]
     Default,
-}
-impl Default for LOCKU4res {
-    fn default() -> Self {
-        LOCKU4res::Default
-    }
 }
 impl XdrIndexer for LOCKU4res {
     type Error = ::serde_xdr::error::Error;
@@ -2121,16 +2024,13 @@ pub struct NVERIFY4res {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum Createmode4 {
+    #[default]
     UNCHECKED4 = 0i32,
     GUARDED4 = 1i32,
     EXCLUSIVE4 = 2i32,
     Exclusive41 = 3i32,
-}
-impl Default for Createmode4 {
-    fn default() -> Self {
-        Createmode4::UNCHECKED4
-    }
 }
 impl XdrIndexer for Createmode4 {
     type Error = ::serde_xdr::error::Error;
@@ -2192,14 +2092,11 @@ impl XdrIndexer for Createhow4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum Opentype4 {
+    #[default]
     Open4Nocreate = 0i32,
     Open4Create = 1i32,
-}
-impl Default for Opentype4 {
-    fn default() -> Self {
-        Opentype4::Open4Nocreate
-    }
 }
 impl XdrIndexer for Opentype4 {
     type Error = ::serde_xdr::error::Error;
@@ -2217,15 +2114,11 @@ impl XdrIndexer for Opentype4 {
         }
     }
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum Openflag4 {
     Open4Create(Createhow4),
+    #[default]
     Default,
-}
-impl Default for Openflag4 {
-    fn default() -> Self {
-        Openflag4::Default
-    }
 }
 impl XdrIndexer for Openflag4 {
     type Error = ::serde_xdr::error::Error;
@@ -2244,14 +2137,11 @@ impl XdrIndexer for Openflag4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum LimitBy4 {
+    #[default]
     NfsLimitSize = 1i32,
     NfsLimitBlocks = 2i32,
-}
-impl Default for LimitBy4 {
-    fn default() -> Self {
-        LimitBy4::NfsLimitSize
-    }
 }
 impl XdrIndexer for LimitBy4 {
     type Error = ::serde_xdr::error::Error;
@@ -2302,16 +2192,13 @@ impl XdrIndexer for NfsSpaceLimit4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum OpenDelegationType4 {
+    #[default]
     OpenDelegateNone = 0i32,
     OpenDelegateRead = 1i32,
     OpenDelegateWrite = 2i32,
     OpenDelegateNoneExt = 3i32,
-}
-impl Default for OpenDelegationType4 {
-    fn default() -> Self {
-        OpenDelegationType4::OpenDelegateNone
-    }
 }
 impl XdrIndexer for OpenDelegationType4 {
     type Error = ::serde_xdr::error::Error;
@@ -2335,7 +2222,9 @@ impl XdrIndexer for OpenDelegationType4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum OpenClaimType4 {
+    #[default]
     ClaimNull = 0i32,
     ClaimPrevious = 1i32,
     ClaimDelegateCur = 2i32,
@@ -2343,11 +2232,6 @@ pub enum OpenClaimType4 {
     ClaimFh = 4i32,
     ClaimDelegCurFh = 5i32,
     ClaimDelegPrevFh = 6i32,
-}
-impl Default for OpenClaimType4 {
-    fn default() -> Self {
-        OpenClaimType4::ClaimNull
-    }
 }
 impl XdrIndexer for OpenClaimType4 {
     type Error = ::serde_xdr::error::Error;
@@ -2445,7 +2329,9 @@ pub struct OpenWriteDelegation4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum WhyNoDelegation4 {
+    #[default]
     Wnd4NotWanted = 0i32,
     Wnd4Contention = 1i32,
     Wnd4Resource = 2i32,
@@ -2455,11 +2341,6 @@ pub enum WhyNoDelegation4 {
     Wnd4NotSuppDowngrade = 6i32,
     Wnd4Cancelled = 7i32,
     Wnd4IsDir = 8i32,
-}
-impl Default for WhyNoDelegation4 {
-    fn default() -> Self {
-        WhyNoDelegation4::Wnd4NotWanted
-    }
 }
 impl XdrIndexer for WhyNoDelegation4 {
     type Error = ::serde_xdr::error::Error;
@@ -2491,16 +2372,12 @@ impl XdrIndexer for WhyNoDelegation4 {
         }
     }
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum OpenNoneDelegation4 {
     Wnd4Contention(bool),
     Wnd4Resource(bool),
+    #[default]
     Default,
-}
-impl Default for OpenNoneDelegation4 {
-    fn default() -> Self {
-        OpenNoneDelegation4::Default
-    }
 }
 impl XdrIndexer for OpenNoneDelegation4 {
     type Error = ::serde_xdr::error::Error;
@@ -2519,17 +2396,13 @@ impl XdrIndexer for OpenNoneDelegation4 {
         }
     }
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum OpenDelegation4 {
+    #[default]
     OpenDelegateNone,
     OpenDelegateRead(OpenReadDelegation4),
     OpenDelegateWrite(OpenWriteDelegation4),
     OpenDelegateNoneExt(OpenNoneDelegation4),
-}
-impl Default for OpenDelegation4 {
-    fn default() -> Self {
-        OpenDelegation4::OpenDelegateNone
-    }
 }
 impl XdrIndexer for OpenDelegation4 {
     type Error = ::serde_xdr::error::Error;
@@ -2559,15 +2432,11 @@ pub struct OPEN4resok {
     pub attrset: Vec<u32>,
     pub delegation: OpenDelegation4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum OPEN4res {
     Nfs4Ok(OPEN4resok),
+    #[default]
     Default,
-}
-impl Default for OPEN4res {
-    fn default() -> Self {
-        OPEN4res::Default
-    }
 }
 impl XdrIndexer for OPEN4res {
     type Error = ::serde_xdr::error::Error;
@@ -2601,15 +2470,11 @@ pub struct OpenConfirm4args {
 pub struct OpenConfirm4resok {
     pub open_stateid: Stateid4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum OpenConfirm4res {
     Nfs4Ok(OpenConfirm4resok),
+    #[default]
     Default,
-}
-impl Default for OpenConfirm4res {
-    fn default() -> Self {
-        OpenConfirm4res::Default
-    }
 }
 impl XdrIndexer for OpenConfirm4res {
     type Error = ::serde_xdr::error::Error;
@@ -2637,15 +2502,11 @@ pub struct OpenDowngrade4args {
 pub struct OpenDowngrade4resok {
     pub open_stateid: Stateid4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum OpenDowngrade4res {
     Nfs4Ok(OpenDowngrade4resok),
+    #[default]
     Default,
-}
-impl Default for OpenDowngrade4res {
-    fn default() -> Self {
-        OpenDowngrade4res::Default
-    }
 }
 impl XdrIndexer for OpenDowngrade4res {
     type Error = ::serde_xdr::error::Error;
@@ -2691,15 +2552,11 @@ pub struct READ4resok {
     #[serde(with = "serde_xdr::opaque::variable")]
     pub data: Vec<u8>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum READ4res {
     Nfs4Ok(READ4resok),
+    #[default]
     Default,
-}
-impl Default for READ4res {
-    fn default() -> Self {
-        READ4res::Default
-    }
 }
 impl XdrIndexer for READ4res {
     type Error = ::serde_xdr::error::Error;
@@ -2743,15 +2600,11 @@ pub struct READDIR4resok {
     pub cookieverf: [u8; NFS4_VERIFIER_SIZE as usize],
     pub reply: Dirlist4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum READDIR4res {
     Nfs4Ok(READDIR4resok),
+    #[default]
     Default,
-}
-impl Default for READDIR4res {
-    fn default() -> Self {
-        READDIR4res::Default
-    }
 }
 impl XdrIndexer for READDIR4res {
     type Error = ::serde_xdr::error::Error;
@@ -2773,15 +2626,11 @@ pub struct READLINK4resok {
     #[serde(with = "serde_xdr::opaque::variable")]
     pub link: Vec<u8>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum READLINK4res {
     Nfs4Ok(READLINK4resok),
+    #[default]
     Default,
-}
-impl Default for READLINK4res {
-    fn default() -> Self {
-        READLINK4res::Default
-    }
 }
 impl XdrIndexer for READLINK4res {
     type Error = ::serde_xdr::error::Error;
@@ -2806,15 +2655,11 @@ pub struct REMOVE4args {
 pub struct REMOVE4resok {
     pub cinfo: ChangeInfo4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum REMOVE4res {
     Nfs4Ok(REMOVE4resok),
+    #[default]
     Default,
-}
-impl Default for REMOVE4res {
-    fn default() -> Self {
-        REMOVE4res::Default
-    }
 }
 impl XdrIndexer for REMOVE4res {
     type Error = ::serde_xdr::error::Error;
@@ -2841,15 +2686,11 @@ pub struct RENAME4resok {
     pub source_cinfo: ChangeInfo4,
     pub target_cinfo: ChangeInfo4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum RENAME4res {
     Nfs4Ok(RENAME4resok),
+    #[default]
     Default,
-}
-impl Default for RENAME4res {
-    fn default() -> Self {
-        RENAME4res::Default
-    }
 }
 impl XdrIndexer for RENAME4res {
     type Error = ::serde_xdr::error::Error;
@@ -2888,15 +2729,12 @@ pub struct SECINFO4args {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum RpcGssSvcT {
+    #[default]
     RpcGssSvcNone = 1i32,
     RpcGssSvcIntegrity = 2i32,
     RpcGssSvcPrivacy = 3i32,
-}
-impl Default for RpcGssSvcT {
-    fn default() -> Self {
-        RpcGssSvcT::RpcGssSvcNone
-    }
 }
 impl XdrIndexer for RpcGssSvcT {
     type Error = ::serde_xdr::error::Error;
@@ -2923,15 +2761,11 @@ pub struct RpcsecGssInfo {
     pub qop: u32,
     pub service: RpcGssSvcT,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum Secinfo4 {
     RpcsecGss(RpcsecGssInfo),
+    #[default]
     Default,
-}
-impl Default for Secinfo4 {
-    fn default() -> Self {
-        Secinfo4::Default
-    }
 }
 impl XdrIndexer for Secinfo4 {
     type Error = ::serde_xdr::error::Error;
@@ -2948,15 +2782,11 @@ impl XdrIndexer for Secinfo4 {
         }
     }
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum SECINFO4res {
     Nfs4Ok(Vec<Secinfo4>),
+    #[default]
     Default,
-}
-impl Default for SECINFO4res {
-    fn default() -> Self {
-        SECINFO4res::Default
-    }
 }
 impl XdrIndexer for SECINFO4res {
     type Error = ::serde_xdr::error::Error;
@@ -2995,16 +2825,12 @@ pub struct SETCLIENTID4resok {
     #[serde(with = "serde_xdr::opaque::fixed")]
     pub setclientid_confirm: [u8; NFS4_VERIFIER_SIZE as usize],
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum SETCLIENTID4res {
     Nfs4Ok(SETCLIENTID4resok),
     Nfs4errClidInuse(Netaddr4),
+    #[default]
     Default,
-}
-impl Default for SETCLIENTID4res {
-    fn default() -> Self {
-        SETCLIENTID4res::Default
-    }
 }
 impl XdrIndexer for SETCLIENTID4res {
     type Error = ::serde_xdr::error::Error;
@@ -3056,15 +2882,11 @@ pub struct WRITE4resok {
     #[serde(with = "serde_xdr::opaque::fixed")]
     pub writeverf: [u8; NFS4_VERIFIER_SIZE as usize],
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum WRITE4res {
     Nfs4Ok(WRITE4resok),
+    #[default]
     Default,
-}
-impl Default for WRITE4res {
-    fn default() -> Self {
-        WRITE4res::Default
-    }
 }
 impl XdrIndexer for WRITE4res {
     type Error = ::serde_xdr::error::Error;
@@ -3101,16 +2923,12 @@ pub struct GssCbHandles4 {
     #[serde(with = "serde_xdr::opaque::variable")]
     pub gcbp_handle_from_client: Vec<u8>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum CallbackSecParms4 {
+    #[default]
     AuthNone,
     AuthSys(AuthsysParms),
     RpcsecGss(GssCbHandles4),
-}
-impl Default for CallbackSecParms4 {
-    fn default() -> Self {
-        CallbackSecParms4::AuthNone
-    }
 }
 impl XdrIndexer for CallbackSecParms4 {
     type Error = ::serde_xdr::error::Error;
@@ -3141,16 +2959,13 @@ pub struct BackchannelCtl4res {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum ChannelDirFromClient4 {
+    #[default]
     Cdfc4Fore = 1i32,
     Cdfc4Back = 2i32,
     Cdfc4ForeOrBoth = 3i32,
     Cdfc4BackOrBoth = 7i32,
-}
-impl Default for ChannelDirFromClient4 {
-    fn default() -> Self {
-        ChannelDirFromClient4::Cdfc4Fore
-    }
 }
 impl XdrIndexer for ChannelDirFromClient4 {
     type Error = ::serde_xdr::error::Error;
@@ -3181,15 +2996,12 @@ pub struct BindConnToSession4args {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum ChannelDirFromServer4 {
+    #[default]
     Cdfs4Fore = 1i32,
     Cdfs4Back = 2i32,
     Cdfs4Both = 3i32,
-}
-impl Default for ChannelDirFromServer4 {
-    fn default() -> Self {
-        ChannelDirFromServer4::Cdfs4Fore
-    }
 }
 impl XdrIndexer for ChannelDirFromServer4 {
     type Error = ::serde_xdr::error::Error;
@@ -3216,15 +3028,11 @@ pub struct BindConnToSession4resok {
     pub bctsr_dir: ChannelDirFromServer4,
     pub bctsr_use_conn_in_rdma_mode: bool,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum BindConnToSession4res {
     Nfs4Ok(BindConnToSession4resok),
+    #[default]
     Default,
-}
-impl Default for BindConnToSession4res {
-    fn default() -> Self {
-        BindConnToSession4res::Default
-    }
 }
 impl XdrIndexer for BindConnToSession4res {
     type Error = ::serde_xdr::error::Error;
@@ -3256,15 +3064,12 @@ pub struct SsvSpParms4 {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum StateProtectHow4 {
+    #[default]
     Sp4None = 0i32,
     Sp4MachCred = 1i32,
     Sp4Ssv = 2i32,
-}
-impl Default for StateProtectHow4 {
-    fn default() -> Self {
-        StateProtectHow4::Sp4None
-    }
 }
 impl XdrIndexer for StateProtectHow4 {
     type Error = ::serde_xdr::error::Error;
@@ -3284,16 +3089,12 @@ impl XdrIndexer for StateProtectHow4 {
         }
     }
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum StateProtect4A {
+    #[default]
     Sp4None,
     Sp4MachCred(StateProtectOps4),
     Sp4Ssv(SsvSpParms4),
-}
-impl Default for StateProtect4A {
-    fn default() -> Self {
-        StateProtect4A::Sp4None
-    }
 }
 impl XdrIndexer for StateProtect4A {
     type Error = ::serde_xdr::error::Error;
@@ -3329,16 +3130,12 @@ pub struct SsvProtInfo4 {
     pub spi_window: u32,
     pub spi_handles: Vec<serde_xdr::opaque::VariableArray>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum StateProtect4R {
+    #[default]
     Sp4None,
     Sp4MachCred(StateProtectOps4),
     Sp4Ssv(SsvProtInfo4),
-}
-impl Default for StateProtect4R {
-    fn default() -> Self {
-        StateProtect4R::Sp4None
-    }
 }
 impl XdrIndexer for StateProtect4R {
     type Error = ::serde_xdr::error::Error;
@@ -3369,15 +3166,11 @@ pub struct ExchangeId4resok {
     pub eir_server_scope: Vec<u8>,
     pub eir_server_impl_id: Vec<NfsImplId4>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum ExchangeId4res {
     Nfs4Ok(ExchangeId4resok),
+    #[default]
     Default,
-}
-impl Default for ExchangeId4res {
-    fn default() -> Self {
-        ExchangeId4res::Default
-    }
 }
 impl XdrIndexer for ExchangeId4res {
     type Error = ::serde_xdr::error::Error;
@@ -3423,15 +3216,11 @@ pub struct CreateSession4resok {
     pub csr_fore_chan_attrs: ChannelAttrs4,
     pub csr_back_chan_attrs: ChannelAttrs4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum CreateSession4res {
     Nfs4Ok(CreateSession4resok),
+    #[default]
     Default,
-}
-impl Default for CreateSession4res {
-    fn default() -> Self {
-        CreateSession4res::Default
-    }
 }
 impl XdrIndexer for CreateSession4res {
     type Error = ::serde_xdr::error::Error;
@@ -3485,14 +3274,11 @@ pub struct GetDirDelegation4resok {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum Gddrnf4Status {
+    #[default]
     Gdd4Ok = 0i32,
     Gdd4Unavail = 1i32,
-}
-impl Default for Gddrnf4Status {
-    fn default() -> Self {
-        Gddrnf4Status::Gdd4Ok
-    }
 }
 impl XdrIndexer for Gddrnf4Status {
     type Error = ::serde_xdr::error::Error;
@@ -3536,15 +3322,11 @@ impl XdrIndexer for GetDirDelegation4resNonFatal {
         }
     }
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum GetDirDelegation4res {
     Nfs4Ok(GetDirDelegation4resNonFatal),
+    #[default]
     Default,
-}
-impl Default for GetDirDelegation4res {
-    fn default() -> Self {
-        GetDirDelegation4res::Default
-    }
 }
 impl XdrIndexer for GetDirDelegation4res {
     type Error = ::serde_xdr::error::Error;
@@ -3574,16 +3356,12 @@ pub struct GETDEVICEINFO4resok {
     pub gdir_device_addr: DeviceAddr4,
     pub gdir_notification: Vec<u32>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum GETDEVICEINFO4res {
     Nfs4Ok(GETDEVICEINFO4resok),
     Nfs4errToosmall(u32),
+    #[default]
     Default,
-}
-impl Default for GETDEVICEINFO4res {
-    fn default() -> Self {
-        GETDEVICEINFO4res::Default
-    }
 }
 impl XdrIndexer for GETDEVICEINFO4res {
     type Error = ::serde_xdr::error::Error;
@@ -3623,15 +3401,11 @@ pub struct GETDEVICELIST4resok {
     pub gdlr_deviceid_list: Vec<DEVICEIDWRAP>,
     pub gdlr_eof: bool,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum GETDEVICELIST4res {
     Nfs4Ok(GETDEVICELIST4resok),
+    #[default]
     Default,
-}
-impl Default for GETDEVICELIST4res {
-    fn default() -> Self {
-        GETDEVICELIST4res::Default
-    }
 }
 impl XdrIndexer for GETDEVICELIST4res {
     type Error = ::serde_xdr::error::Error;
@@ -3648,15 +3422,11 @@ impl XdrIndexer for GETDEVICELIST4res {
         }
     }
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum Newtime4 {
+    #[default]
     FALSE,
     TRUE(Nfstime4),
-}
-impl Default for Newtime4 {
-    fn default() -> Self {
-        Newtime4::FALSE
-    }
 }
 impl XdrIndexer for Newtime4 {
     type Error = ::serde_xdr::error::Error;
@@ -3674,15 +3444,11 @@ impl XdrIndexer for Newtime4 {
         }
     }
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum Newoffset4 {
+    #[default]
     FALSE,
     TRUE(u64),
-}
-impl Default for Newoffset4 {
-    fn default() -> Self {
-        Newoffset4::FALSE
-    }
 }
 impl XdrIndexer for Newoffset4 {
     type Error = ::serde_xdr::error::Error;
@@ -3710,15 +3476,11 @@ pub struct LAYOUTCOMMIT4args {
     pub loca_time_modify: Newtime4,
     pub loca_layoutupdate: Layoutupdate4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum Newsize4 {
+    #[default]
     FALSE,
     TRUE(u64),
-}
-impl Default for Newsize4 {
-    fn default() -> Self {
-        Newsize4::FALSE
-    }
 }
 impl XdrIndexer for Newsize4 {
     type Error = ::serde_xdr::error::Error;
@@ -3740,15 +3502,11 @@ impl XdrIndexer for Newsize4 {
 pub struct LAYOUTCOMMIT4resok {
     pub locr_newsize: Newsize4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum LAYOUTCOMMIT4res {
     Nfs4Ok(LAYOUTCOMMIT4resok),
+    #[default]
     Default,
-}
-impl Default for LAYOUTCOMMIT4res {
-    fn default() -> Self {
-        LAYOUTCOMMIT4res::Default
-    }
 }
 impl XdrIndexer for LAYOUTCOMMIT4res {
     type Error = ::serde_xdr::error::Error;
@@ -3782,16 +3540,12 @@ pub struct LAYOUTGET4resok {
     pub logr_stateid: Stateid4,
     pub logr_layout: Vec<Layout4>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum LAYOUTGET4res {
     Nfs4Ok(LAYOUTGET4resok),
     Nfs4errLayouttrylater(bool),
+    #[default]
     Default,
-}
-impl Default for LAYOUTGET4res {
-    fn default() -> Self {
-        LAYOUTGET4res::Default
-    }
 }
 impl XdrIndexer for LAYOUTGET4res {
     type Error = ::serde_xdr::error::Error;
@@ -3817,15 +3571,11 @@ pub struct LAYOUTRETURN4args {
     pub lora_iomode: Layoutiomode4,
     pub lora_layoutreturn: Layoutreturn4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum LayoutreturnStateid {
+    #[default]
     FALSE,
     TRUE(Stateid4),
-}
-impl Default for LayoutreturnStateid {
-    fn default() -> Self {
-        LayoutreturnStateid::FALSE
-    }
 }
 impl XdrIndexer for LayoutreturnStateid {
     type Error = ::serde_xdr::error::Error;
@@ -3843,15 +3593,11 @@ impl XdrIndexer for LayoutreturnStateid {
         }
     }
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum LAYOUTRETURN4res {
     Nfs4Ok(LayoutreturnStateid),
+    #[default]
     Default,
-}
-impl Default for LAYOUTRETURN4res {
-    fn default() -> Self {
-        LAYOUTRETURN4res::Default
-    }
 }
 impl XdrIndexer for LAYOUTRETURN4res {
     type Error = ::serde_xdr::error::Error;
@@ -3870,14 +3616,11 @@ impl XdrIndexer for LAYOUTRETURN4res {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum SecinfoStyle4 {
+    #[default]
     SecinfoStyle4CurrentFh = 0i32,
     SecinfoStyle4Parent = 1i32,
-}
-impl Default for SecinfoStyle4 {
-    fn default() -> Self {
-        SecinfoStyle4::SecinfoStyle4CurrentFh
-    }
 }
 impl XdrIndexer for SecinfoStyle4 {
     type Error = ::serde_xdr::error::Error;
@@ -3914,15 +3657,11 @@ pub struct SEQUENCE4resok {
     pub sr_target_highest_slotid: u32,
     pub sr_status_flags: u32,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum SEQUENCE4res {
     Nfs4Ok(SEQUENCE4resok),
+    #[default]
     Default,
-}
-impl Default for SEQUENCE4res {
-    fn default() -> Self {
-        SEQUENCE4res::Default
-    }
 }
 impl XdrIndexer for SEQUENCE4res {
     type Error = ::serde_xdr::error::Error;
@@ -3959,15 +3698,11 @@ pub struct SetSsv4resok {
     #[serde(with = "serde_xdr::opaque::variable")]
     pub ssr_digest: Vec<u8>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum SetSsv4res {
     Nfs4Ok(SetSsv4resok),
+    #[default]
     Default,
-}
-impl Default for SetSsv4res {
-    fn default() -> Self {
-        SetSsv4res::Default
-    }
 }
 impl XdrIndexer for SetSsv4res {
     type Error = ::serde_xdr::error::Error;
@@ -3992,15 +3727,11 @@ pub struct TestStateid4args {
 pub struct TestStateid4resok {
     pub tsr_status_codes: Vec<Nfsstat4>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum TestStateid4res {
     Nfs4Ok(TestStateid4resok),
+    #[default]
     Default,
-}
-impl Default for TestStateid4res {
-    fn default() -> Self {
-        TestStateid4res::Default
-    }
 }
 impl XdrIndexer for TestStateid4res {
     type Error = ::serde_xdr::error::Error;
@@ -4051,15 +3782,11 @@ pub struct WantDelegation4args {
     pub wda_want: u32,
     pub wda_claim: DelegClaim4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum WantDelegation4res {
     Nfs4Ok(OpenDelegation4),
+    #[default]
     Default,
-}
-impl Default for WantDelegation4res {
-    fn default() -> Self {
-        WantDelegation4res::Default
-    }
 }
 impl XdrIndexer for WantDelegation4res {
     type Error = ::serde_xdr::error::Error;
@@ -4113,16 +3840,12 @@ pub struct COPY4resok {
     pub cr_response: WriteResponse4,
     pub cr_requirements: CopyRequirements4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum COPY4res {
     Nfs4Ok(COPY4resok),
     Nfs4errOffloadNoReqs(CopyRequirements4),
+    #[default]
     Default,
-}
-impl Default for COPY4res {
-    fn default() -> Self {
-        COPY4res::Default
-    }
 }
 impl XdrIndexer for COPY4res {
     type Error = ::serde_xdr::error::Error;
@@ -4152,15 +3875,11 @@ pub struct CopyNotify4resok {
     pub cnr_stateid: Stateid4,
     pub cnr_source_server: Vec<Netloc4>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum CopyNotify4res {
     Nfs4Ok(CopyNotify4resok),
+    #[default]
     Default,
-}
-impl Default for CopyNotify4res {
-    fn default() -> Self {
-        CopyNotify4res::Default
-    }
 }
 impl XdrIndexer for CopyNotify4res {
     type Error = ::serde_xdr::error::Error;
@@ -4194,15 +3913,11 @@ pub struct OffloadStatus4resok {
     pub osr_count: u64,
     pub osr_complete: Vec<Nfsstat4>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum OffloadStatus4res {
     Nfs4Ok(OffloadStatus4resok),
+    #[default]
     Default,
-}
-impl Default for OffloadStatus4res {
-    fn default() -> Self {
-        OffloadStatus4res::Default
-    }
 }
 impl XdrIndexer for OffloadStatus4res {
     type Error = ::serde_xdr::error::Error;
@@ -4241,7 +3956,9 @@ pub struct DEALLOCATE4res {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum IoAdviseType4 {
+    #[default]
     IoAdvise4Normal = 0i32,
     IoAdvise4Sequential = 1i32,
     IoAdvise4SequentialBackwards = 2i32,
@@ -4253,11 +3970,6 @@ pub enum IoAdviseType4 {
     IoAdvise4Read = 8i32,
     IoAdvise4Write = 9i32,
     IoAdvise4InitProximity = 10i32,
-}
-impl Default for IoAdviseType4 {
-    fn default() -> Self {
-        IoAdviseType4::IoAdvise4Normal
-    }
 }
 impl XdrIndexer for IoAdviseType4 {
     type Error = ::serde_xdr::error::Error;
@@ -4304,15 +4016,11 @@ pub struct IoAdvise4args {
 pub struct IoAdvise4resok {
     pub ior_hints: Vec<u32>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum IoAdvise4res {
     Nfs4Ok(IoAdvise4resok),
+    #[default]
     Default,
-}
-impl Default for IoAdvise4res {
-    fn default() -> Self {
-        IoAdvise4res::Default
-    }
 }
 impl XdrIndexer for IoAdvise4res {
     type Error = ::serde_xdr::error::Error;
@@ -4373,16 +4081,12 @@ pub struct ReadPlus4args {
     pub rpa_offset: u64,
     pub rpa_count: u32,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum ReadPlusContent {
     Nfs4ContentData(Data4),
     Nfs4ContentHole(DataInfo4),
+    #[default]
     Default,
-}
-impl Default for ReadPlusContent {
-    fn default() -> Self {
-        ReadPlusContent::Default
-    }
 }
 impl XdrIndexer for ReadPlusContent {
     type Error = ::serde_xdr::error::Error;
@@ -4406,15 +4110,11 @@ pub struct ReadPlusRes4 {
     pub rpr_eof: bool,
     pub rpr_contents: Vec<ReadPlusContent>,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum ReadPlus4res {
     Nfs4Ok(ReadPlusRes4),
+    #[default]
     Default,
-}
-impl Default for ReadPlus4res {
-    fn default() -> Self {
-        ReadPlus4res::Default
-    }
 }
 impl XdrIndexer for ReadPlus4res {
     type Error = ::serde_xdr::error::Error;
@@ -4442,15 +4142,11 @@ pub struct SeekRes4 {
     pub sr_eof: bool,
     pub sr_offset: u64,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum SEEK4res {
     Nfs4Ok(SeekRes4),
+    #[default]
     Default,
-}
-impl Default for SEEK4res {
-    fn default() -> Self {
-        SEEK4res::Default
-    }
 }
 impl XdrIndexer for SEEK4res {
     type Error = ::serde_xdr::error::Error;
@@ -4473,15 +4169,11 @@ pub struct WriteSame4args {
     pub wsa_stable: StableHow4,
     pub wsa_adb: AppDataBlock4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum WriteSame4res {
     Nfs4Ok(WriteResponse4),
+    #[default]
     Default,
-}
-impl Default for WriteSame4res {
-    fn default() -> Self {
-        WriteSame4res::Default
-    }
 }
 impl XdrIndexer for WriteSame4res {
     type Error = ::serde_xdr::error::Error;
@@ -4980,15 +4672,11 @@ pub struct CbGetattr4args {
 pub struct CbGetattr4resok {
     pub obj_attributes: Fattr4,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum CbGetattr4res {
     Nfs4Ok(CbGetattr4resok),
+    #[default]
     Default,
-}
-impl Default for CbGetattr4res {
-    fn default() -> Self {
-        CbGetattr4res::Default
-    }
 }
 impl XdrIndexer for CbGetattr4res {
     type Error = ::serde_xdr::error::Error;
@@ -5022,15 +4710,12 @@ pub struct CbIllegal4res {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum LayoutrecallType4 {
+    #[default]
     Layoutrecall4File = 1i32,
     Layoutrecall4Fsid = 2i32,
     Layoutrecall4All = 3i32,
-}
-impl Default for LayoutrecallType4 {
-    fn default() -> Self {
-        LayoutrecallType4::Layoutrecall4File
-    }
 }
 impl XdrIndexer for LayoutrecallType4 {
     type Error = ::serde_xdr::error::Error;
@@ -5100,18 +4785,15 @@ pub struct CbLayoutrecall4res {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum NotifyType4 {
+    #[default]
     Notify4ChangeChildAttrs = 0i32,
     Notify4ChangeDirAttrs = 1i32,
     Notify4RemoveEntry = 2i32,
     Notify4AddEntry = 3i32,
     Notify4RenameEntry = 4i32,
     Notify4ChangeCookieVerifier = 5i32,
-}
-impl Default for NotifyType4 {
-    fn default() -> Self {
-        NotifyType4::Notify4ChangeChildAttrs
-    }
 }
 impl XdrIndexer for NotifyType4 {
     type Error = ::serde_xdr::error::Error;
@@ -5254,15 +4936,11 @@ pub struct CbSequence4resok {
     pub csr_highest_slotid: u32,
     pub csr_target_highest_slotid: u32,
 }
-#[derive(Clone, Debug, XdrIndexer)]
+#[derive(Clone, Debug, XdrIndexer, Default)]
 pub enum CbSequence4res {
     Nfs4Ok(CbSequence4resok),
+    #[default]
     Default,
-}
-impl Default for CbSequence4res {
-    fn default() -> Self {
-        CbSequence4res::Default
-    }
 }
 impl XdrIndexer for CbSequence4res {
     type Error = ::serde_xdr::error::Error;
@@ -5300,14 +4978,11 @@ pub struct CbNotifyLock4res {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum NotifyDeviceidType4 {
+    #[default]
     NotifyDeviceid4Change = 1i32,
     NotifyDeviceid4Delete = 2i32,
-}
-impl Default for NotifyDeviceidType4 {
-    fn default() -> Self {
-        NotifyDeviceidType4::NotifyDeviceid4Change
-    }
 }
 impl XdrIndexer for NotifyDeviceidType4 {
     type Error = ::serde_xdr::error::Error;
@@ -5384,7 +5059,9 @@ pub struct CbOffload4res {
 }
 #[derive(Clone, Debug, PartialEq, XdrIndexer)]
 #[repr(i32)]
+#[derive(Default)]
 pub enum NfsCbOpnum4 {
+    #[default]
     OpCbGetattr = 3i32,
     OpCbRecall = 4i32,
     OpCbLayoutrecall = 5i32,
@@ -5399,11 +5076,6 @@ pub enum NfsCbOpnum4 {
     OpCbNotifyDeviceid = 14i32,
     OpCbOffload = 15i32,
     OpCbIllegal = 10044i32,
-}
-impl Default for NfsCbOpnum4 {
-    fn default() -> Self {
-        NfsCbOpnum4::OpCbGetattr
-    }
 }
 impl XdrIndexer for NfsCbOpnum4 {
     type Error = ::serde_xdr::error::Error;
